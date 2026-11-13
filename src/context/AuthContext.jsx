@@ -1,62 +1,113 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AuthContext } from './auth-context';
 
-// Demo/seed accounts for role-based access demonstration
+const USERS_KEY = 'roomigo_managed_users';
+
+// Seed accounts for role-based access demonstration. These are also
+// the fallback registry entries so the demo logins keep working.
 const DEMO_USERS = [
-  { email: 'student@roomigo.gh', password: 'student123', name: 'Kofi Student', role: 'student', studentId: '22512172' },
-  { email: 'manager@roomigo.gh', password: 'manager123', name: 'Kwame Asare', role: 'manager' },
-  { email: 'admin@roomigo.gh', password: 'admin123', name: 'System Admin', role: 'admin' }
+  { id: 'demo-student', password: 'student123', email: 'student@roomigo.gh', name: 'Kofi Student', role: 'student', studentId: '22512172', phone: '', gender: '' },
+  { id: 'demo-manager', password: 'manager123', email: 'manager@roomigo.gh', name: 'Kwame Asare', role: 'manager', studentId: '', phone: '', gender: '' },
+  { id: 'demo-admin', password: 'admin123', email: 'admin@roomigo.gh', name: 'System Admin', role: 'admin', studentId: '', phone: '', gender: '' }
 ];
 
+const toSessionUser = (account) => ({
+  id: account.id,
+  email: account.email,
+  name: account.name,
+  role: account.role,
+  studentId: account.studentId || '',
+  phone: account.phone || '',
+  gender: account.gender || ''
+});
+
 export const AuthProvider = ({ children }) => {
-  // Restore the stored session synchronously as initial state so we
-  // don't need to setState() inside an effect (avoids cascading renders).
+  // Restore the stored session synchronously as initial state (no
+  // setState inside an effect, avoids cascading renders).
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem('roomigo_user');
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  const login = (email, password) => {
-    // Check demo accounts first (role-based login)
-    const demo = DEMO_USERS.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
-    if (demo) {
-      const demoUser = {
-        id: Date.now(),
-        email: demo.email,
-        name: demo.name,
-        role: demo.role,
-        studentId: demo.studentId || '',
-        createdAt: new Date().toISOString()
-      };
-      setUser(demoUser);
-      localStorage.setItem('roomigo_user', JSON.stringify(demoUser));
-      return { success: true, user: demoUser };
+  // Registry of all managed accounts (students + hostel managers),
+  // seeded with the demo accounts on first load.
+  const [users, setUsers] = useState(() => {
+    const stored = localStorage.getItem(USERS_KEY);
+    if (stored) {
+      try { return JSON.parse(stored); } catch { /* fall through */ }
     }
+    return DEMO_USERS;
+  });
 
-    // Fallback: accept any credentials as a student (mock)
-    const mockUser = {
-      id: Date.now(),
-      email,
-      name: email.split('@')[0],
-      role: 'student',
-      createdAt: new Date().toISOString()
-    };
-    setUser(mockUser);
-    localStorage.setItem('roomigo_user', JSON.stringify(mockUser));
-    return { success: true, user: mockUser };
+  useEffect(() => {
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+  }, [users]);
+
+  const persistSession = (sessionUser) => {
+    localStorage.setItem('roomigo_user', JSON.stringify(sessionUser));
+  };
+
+  const login = (email, password) => {
+    const account = users.find(u => u.email.toLowerCase() === (email || '').trim().toLowerCase());
+    if (!account || account.password !== password) {
+      return {
+        success: false,
+        message: 'Invalid email or password. Please check your details, or sign up if you have no account yet.'
+      };
+    }
+    const sessionUser = toSessionUser(account);
+    setUser(sessionUser);
+    persistSession(sessionUser);
+    return { success: true, user: sessionUser };
   };
 
   const register = (userData) => {
+    const email = (userData.email || '').trim().toLowerCase();
+    if (users.some(u => u.email.toLowerCase() === email)) {
+      return {
+        success: false,
+        message: 'An account with this email already exists. Please sign in instead.'
+      };
+    }
+
+    const isManager = userData.role === 'manager';
     const newUser = {
-      id: Date.now(),
-      ...userData,
-      role: 'student',
+      id: 'user_' + Date.now(),
+      password: userData.password,
+      email,
+      name: userData.name,
+      role: isManager ? 'manager' : 'student',
+      studentId: isManager ? '' : (userData.studentId || ''),
+      phone: userData.phone || '',
+      gender: isManager ? (userData.hostelGender || '') : (userData.gender || ''),
+      hostel: isManager ? {
+        name: userData.hostelName || '',
+        address: userData.hostelAddress || ''
+      } : undefined,
       createdAt: new Date().toISOString()
     };
-    delete newUser.confirmPassword;
-    setUser(newUser);
-    localStorage.setItem('roomigo_user', JSON.stringify(newUser));
-    return { success: true };
+
+    const nextUsers = [...users, newUser];
+    setUsers(nextUsers);
+    localStorage.setItem(USERS_KEY, JSON.stringify(nextUsers));
+
+    const sessionUser = toSessionUser(newUser);
+    setUser(sessionUser);
+    persistSession(sessionUser);
+    return { success: true, user: sessionUser };
+  };
+
+  // Change a registered account's role (used by the Admin "Users" tab).
+  // Admins themselves are never changed.
+  const updateUserRole = (id, role) => {
+    const nextUsers = users.map(u => u.id === id && u.role !== 'admin' ? { ...u, role } : u);
+    setUsers(nextUsers);
+    localStorage.setItem(USERS_KEY, JSON.stringify(nextUsers));
+    if (user && user.id === id && user.role !== 'admin') {
+      const updatedSession = { ...user, role };
+      setUser(updatedSession);
+      persistSession(updatedSession);
+    }
   };
 
   const logout = () => {
@@ -67,17 +118,28 @@ export const AuthProvider = ({ children }) => {
   const updateProfile = (updates) => {
     const updatedUser = { ...user, ...updates };
     setUser(updatedUser);
-    localStorage.setItem('roomigo_user', JSON.stringify(updatedUser));
+    persistSession(updatedUser);
+    const nextUsers = users.map(u => u.id === user?.id ? { ...u, ...updates } : u);
+    setUsers(nextUsers);
+    localStorage.setItem(USERS_KEY, JSON.stringify(nextUsers));
   };
+
+  const roleLabel = user?.role === 'admin' ? 'Admin'
+    : user?.role === 'manager' ? 'Hostel Manager'
+    : user?.role === 'student' ? 'Student'
+    : '';
 
   const value = {
     user,
+    users,
     loading: false,
     login,
     register,
     logout,
     updateProfile,
+    updateUserRole,
     demoUsers: DEMO_USERS,
+    roleLabel,
     isAuthenticated: !!user,
     isAdmin: user?.role === 'admin',
     isManager: user?.role === 'manager',

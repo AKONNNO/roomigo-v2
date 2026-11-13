@@ -16,12 +16,14 @@ const Login = () => {
       return;
     }
     const result = login(formData.email, formData.password);
-    if (result.success) {
-      const role = result.user?.role || 'student';
-      if (role === 'admin') navigate('/admin');
-      else if (role === 'manager') navigate('/manager');
-      else navigate('/dashboard');
+    if (!result.success) {
+      setError(result.message);
+      return;
     }
+    const role = result.user?.role || 'student';
+    if (role === 'admin') navigate('/admin');
+    else if (role === 'manager') navigate('/manager');
+    else navigate('/dashboard');
   };
 
   return (
@@ -29,12 +31,12 @@ const Login = () => {
       <div className="auth-container">
         <div className="auth-header">
           <h1>Welcome Back!</h1>
-          <p>Sign in to continue to Roomigo</p>
+          <p>Sign in with your email and password — we'll take you to your account</p>
         </div>
-        
+
         <form onSubmit={handleSubmit} className="auth-form">
           {error && <div className="error-message">{error}</div>}
-          
+
           <div className="form-group">
             <label>Email</label>
             <input
@@ -44,7 +46,7 @@ const Login = () => {
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             />
           </div>
-          
+
           <div className="form-group">
             <label>Password</label>
             <input
@@ -54,20 +56,19 @@ const Login = () => {
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             />
           </div>
-          
+
           <button type="submit" className="auth-btn">Sign In</button>
         </form>
-        
+
         <div className="auth-footer">
           <p>Don't have an account? <Link to="/register">Sign Up</Link></p>
         </div>
-        
+
         <div className="demo-credentials">
-          <p><strong>Demo Accounts (use these to explore each role):</strong></p>
-          <p>🎓 Student: <code>student@roomigo.gh</code> / <code>student123</code></p>
-          <p>🏢 Manager: <code>manager@roomigo.gh</code> / <code>manager123</code></p>
-          <p>🛡️ Admin: <code>admin@roomigo.gh</code> / <code>admin123</code></p>
-          <p className="demo-note">Or enter any email + password to log in as a student (demo).</p>
+          <p><strong>Demo accounts:</strong></p>
+          <p><code>student@roomigo.gh</code> / <code>student123</code></p>
+          <p><code>manager@roomigo.gh</code> / <code>manager123</code></p>
+          <p><code>admin@roomigo.gh</code> / <code>admin123</code></p>
         </div>
       </div>
     </div>

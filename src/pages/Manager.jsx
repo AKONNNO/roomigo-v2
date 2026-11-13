@@ -51,7 +51,7 @@ const Manager = () => {
         <div className="manager-header-content">
           <div className="manager-logo"><Building2 size={26} /><span>Manager Portal</span></div>
           <div className="manager-header-actions">
-            <span className="manager-name">{user.name}</span>
+            <span className="manager-name">{user.name} <span className="role-badge manager">🏢 Hostel Manager</span></span>
             <button onClick={() => navigate('/')} className="back-to-site"><Eye size={18} /> View Site</button>
             <button onClick={handleLogout} className="manager-logout"><LogOut size={18} /> Logout</button>
           </div>
@@ -62,6 +62,12 @@ const Manager = () => {
         <div className="manager-greeting">
           <h1>Welcome, {user.name} 👋</h1>
           <p>Oversee your property listings, audit room availability, and process student reservation requests.</p>
+          {managedProperties.length === 0 && (
+            <div className="manager-setup-banner">
+              <p><strong>Set up your hostel!</strong> Add your hostel name, images, room spaces and amenities to start receiving student enquiries.</p>
+              <button onClick={() => { setActiveTab('properties'); setShowAddForm(true); }} className="add-property-btn">+ Add My Hostel</button>
+            </div>
+          )}
         </div>
 
         <div className="manager-tabs">

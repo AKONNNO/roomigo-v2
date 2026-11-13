@@ -45,6 +45,8 @@ const Navbar = () => {
               <span className="user-name">
                 <User size={16} /> {user?.name || user?.email?.split('@')[0]}
               </span>
+              {isManager && <span className="role-badge manager">🏢 Manager</span>}
+              {isAdmin && <span className="role-badge admin">🛡️ Admin</span>}
               <button onClick={handleLogout} className="btn-logout">
                 <LogOut size={16} /> Logout
               </button>

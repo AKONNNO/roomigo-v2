@@ -1,8 +1,31 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Shield, Users, Star, ArrowRight, Building2 } from 'lucide-react';
 import PropertyCard from '../components/PropertyCard';
 import { useProperty } from '../context/useProperty';
 import './Home.css';
+
+// Animated counter that counts up from 0 to `target` when it appears on screen
+const StatCounter = ({ target, suffix = '', duration = 2000 }) => {
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    let frame;
+    const start = performance.now();
+    const tick = (now) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3); // ease-out for a natural feel
+      setValue(Math.floor(eased * target));
+      if (progress < 1) {
+        frame = requestAnimationFrame(tick);
+      }
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [target, duration]);
+
+  return <span className="stat-number">{value}{suffix}</span>;
+};
 
 const Home = () => {
   const { propertiesList } = useProperty();
@@ -24,15 +47,15 @@ const Home = () => {
           </div>
           <div className="hero-stats">
             <div className="stat">
-              <span className="stat-number">500+</span>
+              <StatCounter target={500} suffix="+" />
               <span className="stat-label">Listings</span>
             </div>
             <div className="stat">
-              <span className="stat-number">2000+</span>
+              <StatCounter target={2000} suffix="+" />
               <span className="stat-label">Students Housed</span>
             </div>
             <div className="stat">
-              <span className="stat-number">50+</span>
+              <StatCounter target={50} suffix="+" />
               <span className="stat-label">Verified Managers</span>
             </div>
           </div>

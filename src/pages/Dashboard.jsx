@@ -42,6 +42,7 @@ const Dashboard = () => {
           <div>
             <h1>Welcome, {user?.name || 'Student'}!</h1>
             <p>Manage your hostel enquiries and bookings</p>
+            <span className="role-badge student">🎓 You are signed in as a Student</span>
           </div>
         </header>
 
@@ -105,7 +106,7 @@ const Dashboard = () => {
           <div className="profile-card">
             <div className="profile-field"><label>Name:</label><span>{user?.name || 'Not set'}</span></div>
             <div className="profile-field"><label>Email:</label><span>{user?.email || 'Not set'}</span></div>
-            <div className="profile-field"><label>Role:</label><span>{user?.role || 'student'}</span></div>
+            <div className="profile-field"><label>Role:</label><span className="role-badge student">🎓 Student</span></div>
           </div>
         </section>
       </main>

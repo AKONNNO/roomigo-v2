@@ -25,9 +25,17 @@ export const PropertyProvider = ({ children }) => {
   const getProperty = (id) => propertiesList.find(p => p.id === Number(id));
 
   const addProperty = (data) => {
+    // images may arrive as an array (Admin/Manager buildProperty) or a
+    // comma-separated string (Registration form) - normalize to an array.
+    const rawImages = Array.isArray(data.images)
+      ? data.images
+      : typeof data.images === 'string'
+        ? data.images.split(',')
+        : [];
+    const cleanImages = rawImages.map(s => String(s).trim()).filter(Boolean);
     const newProperty = {
       id: Date.now(),
-      images: data.images?.length ? data.images.split(',').map(s => s.trim()) : [
+      images: cleanImages.length ? cleanImages : [
         'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800',
         'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800'
       ],

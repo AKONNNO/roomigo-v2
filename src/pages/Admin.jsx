@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Home, MessageSquare, Check, X, Eye, Plus, Trash2, Pencil, BadgeCheck } from 'lucide-react';
+import { Shield, Home, MessageSquare, Check, X, Eye, Plus, Trash2, Pencil, BadgeCheck, Users } from 'lucide-react';
+import { useAuth } from '../context/useAuth';
 import { useBooking } from '../context/useBooking';
 import { useProperty } from '../context/useProperty';
 import PropertyForm from '../components/PropertyForm';
 import './Admin.css';
 
 const Admin = () => {
+  const { user, users, updateUserRole } = useAuth();
   const { enquiries, bookings, updateEnquiryStatus, updateBookingStatus } = useBooking();
   const { propertiesList, addProperty, updateProperty, deleteProperty, toggleVerified } = useProperty();
   const navigate = useNavigate();
@@ -36,7 +38,10 @@ const Admin = () => {
       <header className="admin-header">
         <div className="admin-header-content">
           <div className="admin-logo"><Shield size={28} /><span>Roomigo Admin</span></div>
-          <button onClick={() => navigate('/')} className="back-to-site"><Eye size={18} /> View Site</button>
+          <div className="admin-header-actions">
+            <span className="admin-name">{user?.name} <span className="role-badge admin">🛡️ Admin</span></span>
+            <button onClick={() => navigate('/')} className="back-to-site"><Eye size={18} /> View Site</button>
+          </div>
         </div>
       </header>
 
@@ -52,6 +57,7 @@ const Admin = () => {
           <button className={`tab-btn ${activeTab === 'properties' ? 'active' : ''}`} onClick={() => setActiveTab('properties')}>Properties ({propertiesList.length})</button>
           <button className={`tab-btn ${activeTab === 'enquiries' ? 'active' : ''}`} onClick={() => setActiveTab('enquiries')}>Enquiries ({enquiries.length})</button>
           <button className={`tab-btn ${activeTab === 'bookings' ? 'active' : ''}`} onClick={() => setActiveTab('bookings')}>Bookings ({bookings.length})</button>
+          <button className={`tab-btn ${activeTab === 'users' ? 'active' : ''}`} onClick={() => setActiveTab('users')}>Users ({users.length})</button>
         </div>
 
         <div className="admin-content">
@@ -139,6 +145,44 @@ const Admin = () => {
                   </tbody>
                 </table>
               ) : <p className="no-data">No bookings yet.</p>}
+            </div>
+          )}
+
+
+          {activeTab === 'users' && (
+            <div className="data-table">
+              <h3><Users size={18} /> Registered Users</h3>
+              {users.length > 0 ? (
+                <table>
+                  <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Phone</th><th>Action</th></tr></thead>
+                  <tbody>
+                    {users.map(u => (
+                      <tr key={u.id}>
+                        <td>{u.name}</td>
+                        <td>{u.email}</td>
+                        <td>
+                          <span className={`role-badge ${u.role === 'admin' ? 'admin' : u.role === 'manager' ? 'manager' : 'student'}`}>
+                            {u.role === 'admin' ? '🛡️ Admin' : u.role === 'manager' ? '🏢 Hostel Manager' : '🎓 Student'}
+                          </span>
+                        </td>
+                        <td>{u.phone || '—'}</td>
+                        <td>
+                          {u.role !== 'admin' && (
+                            <>
+                              {u.role === 'manager' ? (
+                                <button className="action-btn" onClick={() => updateUserRole(u.id, 'student')} title="Demote to student">Make Student</button>
+                              ) : (
+                                <button className="action-btn approve" onClick={() => updateUserRole(u.id, 'manager')} title="Promote to manager">Make Manager</button>
+                              )}
+                            </>
+                          )}
+                          {u.role === 'admin' && <span className="no-data">Protected</span>}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : <p className="no-data">No registered users yet.</p>}
             </div>
           )}
         </div>

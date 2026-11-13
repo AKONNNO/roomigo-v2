@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MapPin, Star, Wifi, Shield, Check, Phone, Mail, ArrowLeft, ChevronLeft, ChevronRight, Users } from 'lucide-react';
 import { useAuth } from '../context/useAuth';
@@ -18,6 +18,15 @@ const PropertyDetails = () => {
   const [submitted, setSubmitted] = useState(false);
 
   const property = propertiesList.find(p => p.id === parseInt(id));
+
+  // Auto-advance the image gallery every 4 seconds
+  useEffect(() => {
+    if (!property || !property.images || property.images.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % property.images.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [property]);
 
   if (!property) {
     return <div className="not-found"><h2>Property Not Found</h2><button onClick={() => navigate('/search')}>Back to Search</button></div>;
