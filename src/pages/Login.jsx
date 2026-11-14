@@ -61,9 +61,8 @@ const Login = () => {
         </form>
 
         <div className="demo-credentials">
-          <p><strong>Demo logins</strong></p>
+          <p><strong>Demo login</strong></p>
           <p>🎓 Student — <code>student@roomigo.gh</code> / <code>student123</code></p>
-          <p>🛡️ Admin — <code>admin@roomigo.gh</code> / <code>admin123</code></p>
         </div>
 
         <div className="auth-footer">
