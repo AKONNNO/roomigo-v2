@@ -30,7 +30,7 @@
 .logo-text {
   font-size: 1.5rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0b7a3b 0%, #f0a500 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -52,7 +52,7 @@
 }
 
 .nav-link:hover {
-  color: #667eea;
+  color: #0b7a3b;
 }
 
 .admin-link {
@@ -114,22 +114,22 @@
 }
 
 .btn-login {
-  color: #667eea;
+  color: #0b7a3b;
   background: transparent;
 }
 
 .btn-login:hover {
-  background: #f0f1ff;
+  background: #e2f3e7;
 }
 
 .btn-register {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0b7a3b 0%, #085a2d 100%);
   color: white;
 }
 
 .btn-register:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 15px rgba(11, 122, 59, 0.4);
 }
 
 .mobile-menu-btn {
@@ -161,7 +161,7 @@
 }
 
 .mobile-menu a:hover, .mobile-menu button:hover {
-  color: #667eea;
+  color: #0b7a3b;
 }
 
 .mobile-logout {

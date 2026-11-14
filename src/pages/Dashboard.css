@@ -14,7 +14,7 @@
 
 .sidebar-header {
   padding: 2rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0b7a3b 0%, #085a2d 100%);
   color: white;
 }
 
@@ -37,9 +37,9 @@
 }
 
 .nav-item:hover, .nav-item.active {
-  background: #f0f1ff;
-  color: #667eea;
-  border-left: 3px solid #667eea;
+  background: #e2f3e7;
+  color: #0b7a3b;
+  border-left: 3px solid #0b7a3b;
 }
 
 .sidebar-footer {
@@ -104,7 +104,7 @@
 
 .stat-icon.pending { background: #fff3cd; color: #f1c40f; }
 .stat-icon.approved { background: #d4edda; color: #27ae60; }
-.stat-icon.total { background: #f0f1ff; color: #667eea; }
+.stat-icon.total { background: #e2f3e7; color: #0b7a3b; }
 
 .stat-value { display: block; font-size: 1.75rem; font-weight: 700; color: #333; }
 .stat-label { color: #666; font-size: 0.85rem; }
@@ -171,7 +171,7 @@
   display: inline-block;
   margin-top: 1rem;
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0b7a3b 0%, #085a2d 100%);
   color: white;
   text-decoration: none;
   border-radius: 8px;

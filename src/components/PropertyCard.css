@@ -118,7 +118,7 @@
 }
 
 .property-distance {
-  color: #667eea;
+  color: #0b7a3b;
   font-size: 0.85rem;
   font-weight: 500;
   margin: 0.25rem 0 0.75rem;
@@ -157,8 +157,8 @@
 }
 
 .amenity-tag {
-  background: #f0f1ff;
-  color: #667eea;
+  background: #e2f3e7;
+  color: #0b7a3b;
   padding: 4px 10px;
   border-radius: 20px;
   font-size: 0.75rem;
@@ -190,7 +190,7 @@
 .price-value {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #667eea;
+  color: #0b7a3b;
 }
 
 .price-type {
@@ -199,7 +199,7 @@
 }
 
 .view-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0b7a3b 0%, #085a2d 100%);
   color: white;
   border: none;
   padding: 0.6rem 1.25rem;
@@ -211,5 +211,5 @@
 
 .property-card:hover .view-btn {
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 15px rgba(11, 122, 59, 0.4);
 }

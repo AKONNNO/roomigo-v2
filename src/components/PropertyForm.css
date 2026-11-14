@@ -12,7 +12,7 @@
   transition: border-color 0.3s;
 }
 .form-field input:focus, .form-field select:focus, .form-field textarea:focus {
-  outline: none; border-color: #667eea;
+  outline: none; border-color: #0b7a3b;
 }
 .manager-fields-title {
   margin: 1.5rem 0 0.5rem;
@@ -24,11 +24,11 @@
 .form-actions { display: flex; gap: 1rem; margin-top: 1.5rem; }
 .form-submit-btn {
   padding: 0.75rem 1.75rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0b7a3b 0%, #085a2d 100%);
   color: white; border: none; border-radius: 8px;
   font-weight: 600; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s;
 }
-.form-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(102,126,234,0.4); }
+.form-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(11,122,59,0.4); }
 .form-cancel-btn { padding: 0.75rem 1.75rem; background: #f8f9fa; color: #555; border: 1px solid #ddd; border-radius: 8px; font-weight: 500; cursor: pointer; }
 .form-cancel-btn:hover { background: #eee; }
 .roomtype-form-options { display: flex; flex-wrap: wrap; gap: 0.75rem; }

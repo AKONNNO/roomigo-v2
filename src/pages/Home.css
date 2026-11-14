@@ -16,7 +16,7 @@
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
+  background: linear-gradient(135deg, rgba(11, 122, 59, 0.9) 0%, rgba(8, 90, 45, 0.9) 100%);
 }
 
 .hero-content {
@@ -49,7 +49,7 @@
   align-items: center;
   gap: 0.5rem;
   background: white;
-  color: #667eea;
+  color: #0b7a3b;
   padding: 1rem 2rem;
   border-radius: 50px;
   text-decoration: none;
@@ -77,11 +77,14 @@
   display: block;
   font-size: 2.5rem;
   font-weight: 700;
+  color: #fff;
 }
 
 .stat-label {
+  display: block;
   font-size: 0.9rem;
-  opacity: 0.9;
+  opacity: 0.95;
+  color: #fff;
 }
 
 /* Container */
@@ -124,7 +127,7 @@
 }
 
 .feature-icon {
-  color: #667eea;
+  color: #0b7a3b;
   margin-bottom: 1rem;
 }
 
@@ -159,7 +162,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #667eea;
+  color: #0b7a3b;
   text-decoration: none;
   font-weight: 600;
 }
@@ -176,7 +179,7 @@
 
 /* CTA Section */
 .cta-section {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0b7a3b 0%, #085a2d 100%);
   color: white;
   padding: 4rem 0;
   text-align: center;
@@ -196,7 +199,7 @@
 .cta-btn {
   display: inline-block;
   background: white;
-  color: #667eea;
+  color: #0b7a3b;
   padding: 1rem 2.5rem;
   border-radius: 50px;
   text-decoration: none;
@@ -229,7 +232,7 @@
 .step-number {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0b7a3b 0%, #085a2d 100%);
   color: white;
   border-radius: 50%;
   display: flex;
@@ -278,6 +281,7 @@
   
   .stat-number {
     font-size: 2rem;
+    color: #fff;
   }
   
   .section-header {
