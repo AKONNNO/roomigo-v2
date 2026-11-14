@@ -20,9 +20,9 @@
   white-space: nowrap;
 }
 
-.role-badge.student { background: #e2f3e7; color: #0b7a3b; }
-.role-badge.manager { background: #e8f8f0; color: #27ae60; }
-.role-badge.admin { background: #fdeaea; color: #e8503c; }
+.role-badge.student { background: var(--mint); color: var(--navy); }
+.role-badge.manager { background: var(--mint); color: var(--teal); }
+.role-badge.admin { background: var(--red-tint); color: var(--red); }
 
 /* Manager "set up your hostel" banner */
 .manager-setup-banner {

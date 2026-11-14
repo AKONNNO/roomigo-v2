@@ -19,13 +19,13 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="navbar-logo">
-          <span className="logo-icon">🏠</span>
-          <span className="logo-text">Roomigo</span>
+          <span className="logo-dot"></span>
+          <span className="logo-text">roomigo</span>
         </Link>
 
         <div className="navbar-links desktop-only">
-          <Link to="/" className="nav-link">Home</Link>
-          <Link to="/search" className="nav-link">Find Hostel</Link>
+          <Link to="/search" className="nav-link">Browse hostels</Link>
+          <Link to="/#how-it-works" className="nav-link">How it works</Link>
           {isAuthenticated && (
             <Link to="/dashboard" className="nav-link">Dashboard</Link>
           )}
@@ -69,8 +69,8 @@ const Navbar = () => {
 
       {mobileMenuOpen && (
         <div className="mobile-menu">
-          <Link to="/" onClick={() => setMobileMenuOpen(false)}>Home</Link>
-          <Link to="/search" onClick={() => setMobileMenuOpen(false)}>Find Hostel</Link>
+          <Link to="/search" onClick={() => setMobileMenuOpen(false)}>Browse hostels</Link>
+          <Link to="/#how-it-works" onClick={() => setMobileMenuOpen(false)}>How it works</Link>
           {isAuthenticated && (
             <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>Dashboard</Link>
           )}

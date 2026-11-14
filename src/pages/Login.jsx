@@ -63,13 +63,6 @@ const Login = () => {
         <div className="auth-footer">
           <p>Don't have an account? <Link to="/register">Sign Up</Link></p>
         </div>
-
-        <div className="demo-credentials">
-          <p><strong>Demo accounts:</strong></p>
-          <p><code>student@roomigo.gh</code> / <code>student123</code></p>
-          <p><code>manager@roomigo.gh</code> / <code>manager123</code></p>
-          <p><code>admin@roomigo.gh</code> / <code>admin123</code></p>
-        </div>
       </div>
     </div>
   );

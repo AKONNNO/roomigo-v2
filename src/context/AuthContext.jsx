@@ -3,13 +3,16 @@ import { AuthContext } from './auth-context';
 
 const USERS_KEY = 'roomigo_managed_users';
 
-// Seed accounts for role-based access demonstration. These are also
-// the fallback registry entries so the demo logins keep working.
+// Seed account for role-based access demonstration. This is also
+// the fallback registry entry so the demo login keeps working.
 const DEMO_USERS = [
-  { id: 'demo-student', password: 'student123', email: 'student@roomigo.gh', name: 'Kofi Student', role: 'student', studentId: '22512172', phone: '', gender: '' },
-  { id: 'demo-manager', password: 'manager123', email: 'manager@roomigo.gh', name: 'Kwame Asare', role: 'manager', studentId: '', phone: '', gender: '' },
-  { id: 'demo-admin', password: 'admin123', email: 'admin@roomigo.gh', name: 'System Admin', role: 'admin', studentId: '', phone: '', gender: '' }
+  { id: 'demo-student', password: 'student123', email: 'student@roomigo.gh', name: 'Kofi Student', role: 'student', studentId: '22512172', phone: '', gender: '' }
 ];
+
+// Legacy demo accounts removed from the app. Still filtered out of the
+// persisted registry so any browser that stored them earlier can't
+// log in with them anymore.
+const LEGACY_DEMO_IDS = ['demo-manager', 'demo-admin'];
 
 const toSessionUser = (account) => ({
   id: account.id,
@@ -30,11 +33,15 @@ export const AuthProvider = ({ children }) => {
   });
 
   // Registry of all managed accounts (students + hostel managers),
-  // seeded with the demo accounts on first load.
+  // seeded with the demo account on first load. Legacy demo manager/admin
+  // entries left over in localStorage are filtered out.
   const [users, setUsers] = useState(() => {
     const stored = localStorage.getItem(USERS_KEY);
     if (stored) {
-      try { return JSON.parse(stored); } catch { /* fall through */ }
+      try {
+        const parsed = JSON.parse(stored);
+        return (Array.isArray(parsed) ? parsed : []).filter(u => !LEGACY_DEMO_IDS.includes(u.id));
+      } catch { /* fall through */ }
     }
     return DEMO_USERS;
   });

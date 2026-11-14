@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { MapPin, Star, Wifi, Shield, Check, Phone, Mail, ArrowLeft, ChevronLeft, ChevronRight, Users } from 'lucide-react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { MapPin, Star, Wifi, Shield, Check, Phone, Mail, ArrowLeft, ChevronLeft, ChevronRight, Users, ChevronRight as BreadcrumbSep } from 'lucide-react';
 import { useAuth } from '../context/useAuth';
 import { useBooking } from '../context/useBooking';
 import { useProperty } from '../context/useProperty';
@@ -12,12 +12,14 @@ const PropertyDetails = () => {
   const { user, isAuthenticated } = useAuth();
   const { createEnquiry } = useBooking();
   const { propertiesList } = useProperty();
+  const property = propertiesList.find(p => p.id === id);
+  const roomTypes = property?.roomTypes || [];
   const [currentImage, setCurrentImage] = useState(0);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ name: user?.name || '', email: user?.email || '', phone: '', message: 'I am interested in booking a room.' });
+  const [selectedRoomType, setSelectedRoomType] = useState(null);
   const [submitted, setSubmitted] = useState(false);
-
-  const property = propertiesList.find(p => p.id === parseInt(id));
+  const [form, setForm] = useState({ name: user?.name || '', email: user?.email || '', phone: '', message: 'I am interested in booking a room.' });
+  const activeRoomType = roomTypes.includes(selectedRoomType) ? selectedRoomType : (roomTypes[0] || null);
 
   // Auto-advance the image gallery every 4 seconds
   useEffect(() => {
@@ -26,7 +28,8 @@ const PropertyDetails = () => {
       setCurrentImage((prev) => (prev + 1) % property.images.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, [property]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, property?.images?.length]);
 
   if (!property) {
     return <div className="not-found"><h2>Property Not Found</h2><button onClick={() => navigate('/search')}>Back to Search</button></div>;
@@ -34,15 +37,32 @@ const PropertyDetails = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    createEnquiry({ ...form, propertyId: property.id, propertyName: property.name, userId: user?.id || 'guest' });
+    createEnquiry({
+      ...form,
+      propertyId: property.id,
+      propertyName: property.name,
+      userId: user?.id || 'guest',
+      roomType: activeRoomType
+    });
     setSubmitted(true);
     setTimeout(() => { setShowForm(false); setSubmitted(false); }, 3000);
   };
 
+  // Per-person price split across occupants of the room configuration
+  const priceFor = (rt) => Math.round(property.price / rt);
+
+
   return (
     <div className="property-details">
       <div className="container">
-        <button className="back-btn" onClick={() => navigate('/search')}><ArrowLeft size={20} /> Back to Search</button>
+        <div className="details-topbar">
+          <button className="back-btn" onClick={() => navigate('/search')}><ArrowLeft size={20} /> Back to Search</button>
+          <nav className="breadcrumb">
+            <Link to="/">Home</Link> <BreadcrumbSep size={14} />
+            <Link to="/search">Browse hostels</Link> <BreadcrumbSep size={14} />
+            <span>{property.name}</span>
+          </nav>
+        </div>
         <div className="image-gallery">
           <img src={property.images[currentImage]} alt={property.name} />
           {property.images.length > 1 && (
@@ -64,19 +84,35 @@ const PropertyDetails = () => {
               <span className="info-badge">{property.distance}</span>
               <span className="info-badge">{property.availableRooms} rooms</span>
             </div>
-            <div className="room-types-section">
-              <h2>Available Room Configurations</h2>
-              {(property.roomTypes || []).length > 0 ? (
-                <div className="room-types-grid">
-                  {(property.roomTypes || []).map(rt => (
-                    <div key={rt} className="room-type-card">
-                      <Users size={20} />
-                      <span><strong>{rt}</strong> in a Room</span>
-                    </div>
+            <div className="rooms-prices-section">
+              <h2>Rooms and prices</h2>
+              {(roomTypes.length > 0 ? (
+                <div className="rooms-table">
+                  <div className="rooms-row rooms-head">
+                    <span>Room type</span><span>Price / year</span><span>Availability</span>
+                  </div>
+                  {roomTypes.map(rt => (
+                    <button
+                      key={rt}
+                      type="button"
+                      className={`rooms-row rooms-item ${rt === activeRoomType ? 'selected' : ''}`}
+                      onClick={() => setSelectedRoomType(rt)}
+                    >
+                      <span><Users size={16} /> {rt} in a room</span>
+                      <span>GH₵ {priceFor(rt).toLocaleString()}</span>
+                      <span className={property.availableRooms <= 5 ? 'low' : ''}>
+                        {property.availableRooms > 0 ? `${property.availableRooms} rooms left` : 'Full'}
+                      </span>
+                    </button>
                   ))}
                 </div>
               ) : (
                 <p className="no-roomtypes">Room options not specified.</p>
+              ))}
+              {activeRoomType && (
+                <p className="room-type-selection-note">
+                  You've selected a <strong>{activeRoomType}-in-a-Room</strong> room. This will be included in your enquiry.
+                </p>
               )}
             </div>
             <div className="property-description"><h2>About</h2><p>{property.description}</p></div>

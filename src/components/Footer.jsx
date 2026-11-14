@@ -17,17 +17,17 @@ const Footer = () => {
           <h4>Quick Links</h4>
           <ul>
             <li><Link to="/">Home</Link></li>
-            <li><Link to="/search">Find Hostel</Link></li>
-            <li><Link to="/register">List Your Property</Link></li>
+            <li><Link to="/search">Browse hostels</Link></li>
+            <li><Link to="/#how-it-works">How it works</Link></li>
           </ul>
         </div>
         
         <div className="footer-section">
           <h4>For Students</h4>
           <ul>
-            <li><Link to="/search?gender=female">Female Hostels</Link></li>
-            <li><Link to="/search?gender=male">Male Hostels</Link></li>
-            <li><Link to="/search?budget=2000">Budget Friendly</Link></li>
+            <li><Link to="/search?gender=female">Female hostels</Link></li>
+            <li><Link to="/search?gender=male">Male hostels</Link></li>
+            <li><Link to="/search?budget=2000">Under GH₵ 2,000</Link></li>
           </ul>
         </div>
         

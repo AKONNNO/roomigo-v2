@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Search as SearchIcon } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import PropertyCard from '../components/PropertyCard';
@@ -7,12 +7,18 @@ import { useProperty } from '../context/useProperty';
 import './Search.css';
 
 const Search = () => {
-  const { propertiesList } = useProperty();
   const [searchParams] = useSearchParams();
+  // Remount the content whenever the URL query changes so filters re-seed cleanly
+  return <SearchContent key={searchParams.toString()} searchParams={searchParams} />;
+};
 
-  // Read footer links' query params: ?gender=female|male and ?budget=2000
+const SearchContent = ({ searchParams }) => {
+  const { propertiesList } = useProperty();
+
+  // Read footer/hero/popular-area links' query params: ?gender, ?budget, ?location
   const genderParam = searchParams.get('gender');
   const budgetParam = searchParams.get('budget');
+  const locationParam = searchParams.get('location');
 
   const initialGender = genderParam === 'female'
     ? 'Female Only'
@@ -20,9 +26,10 @@ const Search = () => {
       ? 'Male Only'
       : 'All';
   const initialPriceMax = budgetParam ? parseInt(budgetParam, 10) : Infinity;
+  const initialLocation = locationParam || 'All Locations';
 
   const [filters, setFilters] = useState({
-    location: 'All Locations',
+    location: initialLocation,
     priceMin: 0,
     priceMax: initialPriceMax,
     gender: initialGender,
@@ -30,16 +37,6 @@ const Search = () => {
     roomTypes: [],
     search: ''
   });
-
-  // Re-apply footer filters when the URL query changes while Search is already open
-  useEffect(() => {
-    setFilters((prev) => ({
-      ...prev,
-      gender: initialGender,
-      priceMin: 0,
-      priceMax: initialPriceMax
-    }));
-  }, [genderParam, budgetParam]);
 
   const allProperties = propertiesList;
 

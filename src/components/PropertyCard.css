@@ -1,18 +1,19 @@
 .property-card {
-  background: white;
-  border-radius: 12px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 2px rgba(11, 31, 58, 0.04);
   text-decoration: none;
   color: inherit;
-  transition: all 0.3s;
+  transition: all 0.2s;
   display: flex;
   flex-direction: column;
 }
 
 .property-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(11, 31, 58, 0.12);
 }
 
 .property-image {
@@ -51,13 +52,13 @@
 }
 
 .badge.verified {
-  background: #27ae60;
-  color: white;
+  background: var(--emerald);
+  color: var(--navy);
 }
 
 .badge.urgent {
-  background: #e74c3c;
-  color: white;
+  background: var(--red);
+  color: var(--white);
 }
 
 .property-gender {
@@ -89,7 +90,7 @@
 .property-name {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #333;
+  color: var(--navy);
   margin: 0;
   flex: 1;
 }
@@ -99,7 +100,7 @@
   align-items: center;
   gap: 4px;
   font-weight: 600;
-  color: #333;
+  color: var(--navy);
 }
 
 .review-count {
@@ -109,7 +110,7 @@
 }
 
 .property-location {
-  color: #666;
+  color: var(--slate);
   font-size: 0.9rem;
   margin: 0.25rem 0;
   display: flex;
@@ -118,7 +119,7 @@
 }
 
 .property-distance {
-  color: #0b7a3b;
+  color: var(--teal);
   font-size: 0.85rem;
   font-weight: 500;
   margin: 0.25rem 0 0.75rem;
@@ -140,9 +141,9 @@
 }
 
 .roomtype-tag {
-  background: #e8f8f0;
-  color: #27ae60;
-  border: 1px solid #b8e6d0;
+  background: var(--mint);
+  color: var(--teal);
+  border: 1px solid var(--emerald);
   padding: 3px 9px;
   border-radius: 6px;
   font-size: 0.75rem;
@@ -157,8 +158,8 @@
 }
 
 .amenity-tag {
-  background: #e2f3e7;
-  color: #0b7a3b;
+  background: var(--cloud);
+  color: var(--teal);
   padding: 4px 10px;
   border-radius: 20px;
   font-size: 0.75rem;
@@ -190,26 +191,26 @@
 .price-value {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #0b7a3b;
+  color: var(--navy);
 }
 
 .price-type {
   font-size: 0.75rem;
-  color: #888;
+  color: var(--slate);
 }
 
 .view-btn {
-  background: linear-gradient(135deg, #0b7a3b 0%, #085a2d 100%);
-  color: white;
+  background: var(--navy);
+  color: var(--white);
   border: none;
   padding: 0.6rem 1.25rem;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: background 0.2s;
 }
 
 .property-card:hover .view-btn {
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(11, 122, 59, 0.4);
+  background: var(--navy-mid);
 }

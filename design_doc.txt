@@ -1,0 +1,536 @@
+Design Document
+Interface design for Roomigo, the student hostel finder and accommodation
+management system for KNUST
+BIT 293 CAPSTONE · KNUST
+Design Document, due 29 November 2026
+Prepared by Rabiu Mujahid, UI/UX Designer
+01 · DESIGN APPROACH
+One job: from "I need a room" to an enquiry sent, in three steps
+This document sets out what Roomigo will look like and how its screens are laid out: the logo, colour scheme, typography,
+components and a wireframe for every screen. Every decision is checked against four goals.
+Clarity
+Price, walking time to
+campus and verified status
+are visible on every hostel
+card without opening it.
+Trust
+Verified hostels carry a
+badge. Every status is
+shown with a word and an
+icon, never by colour alone.
+Speed
+Search, open a hostel, send
+enquiry. Browsing never
+requires an account.
+Consistency
+One palette, one type scale
+and one set of components
+on every screen and device.
+02 · LOGO
+The Roomigo logo is kept exactly as designed
+Primary. Navy mark and wordmark, "igo" in
+teal. Used on white and Cloud backgrounds.
+Reversed. Emerald mark, white
+wordmark. Used on Navy and over
+photos.
+App icon. The mark alone, for the
+browser tab icon and small spaces.
+What it means: a rounded house holding one emerald dot, which reads as a room, a location pin and a keyhole. Rules: keep clear space of
+three times the dot's diameter on all sides; never display the full logo narrower than 96px (use the app icon instead); never recolour, stretch,
+rotate or add effects.
+03 · SCREENS AND FLOW
+Eight screens for three kinds of user
+ID Screen What the user does there Who can open it Proposal feature covered
+S1 Home Starts a search; sees verified hostels and popular areas Everyone Interactive homepage
+S2 Browse hostels Filters results by budget, walking time and amenities Everyone Advanced search and filtering
+S3 Hostel details Views the photo gallery, rooms and prices, facility
+checklist
+Everyone Rich property detail views
+S4 Booking enquiry Sends an enquiry for one hostel Students Online booking enquiry
+S5 Sign in / Create account Signs in, or registers as a Student or Hostel manager Everyone Authentication, role-based
+access
+S6 Student dashboard Tracks every enquiry and its status Students Student dashboard
+S7 Manage listings Adds, edits, hides and verifies hostel listings Managers,
+administrators
+Administrative control panel
+S8 Manage enquiries Reads, approves or declines student enquiries Managers,
+administrators
+Administrative control panel
+Student path
+S1 Home → S2 Browse → S3 Details → S5 Sign in* →
+S4 Enquiry → S6 Dashboard
+*Only if signed out. After signing in, the student returns to S4 for the same
+hostel.
+Manager and administrator path
+S5 Sign in → S7 Manage listings ⇄ S8 Manage enquiries
+Managers see only their own hostels. Administrators see all hostels and
+are the only users who can verify a listing.
+All hostel names, prices and availability shown are sample data pending verification by hostel managers. 1 / 5
+
+===== PAGE BREAK =====
+
+roomigo DESIGN DOCUMENT · COLOUR
+04 · COLOUR SCHEME
+Navy and Emerald on Cloud
+Why this scheme was chosen
+Two schemes were compared: Navy and Emerald (from the brand board) and Blue and Amber. Navy and Emerald is the final choice
+because 1 these are the logo's own colours, so the logo and the interface form one identity; 2 green signals "verified, safe, go",
+which is exactly Roomigo's promise, and it is more distinctive than the blue most apps use; 3 Navy gives very high text contrast
+16.521 on white); 4 it leaves amber and red free to mean only "pending" and "error".
+Deep Navy
+#0B1F3A
+Midnight Blue
+#16365E
+Emerald
+#10B981
+Deep Teal
+#0F766E
+Mint Tint
+#D1FAE5
+Cloud
+#F4F8FA
+Slate
+#4B5B70
+White
+#FFFFFF
+Amber Tint
+#FEF3C7
+Amber Text
+#92400E
+Red Tint
+#FEE2E2
+Red
+#B91C1C
+Border
+#DCE4EC
+60% Cloud, White 30% Navy
+603010 rule: light backgrounds, Navy for structure and
+text, Emerald 10% for the one thing to press.
+Where each colour is used
+Colour Use
+Deep Navy Headings, hero and footer background, standard
+buttons, navigation text
+Midnight Blue Hover state of Navy buttons; photo placeholders
+Emerald The single main action button on a screen, with Navy
+text; logo dot; progress bars
+Deep Teal Links, small section labels, green text on light
+backgrounds, Emerald button hover
+Mint Tint Verified and Approved badges; selected filter chips;
+step numbers
+Cloud / White Page background / cards, forms and navigation bar
+Slate Body and supporting text; input borders
+Amber Pending and Awaiting verification badges only
+Red Form errors, Declined badge, Delete button only
+Contrast check (WCAG 2.1 AA needs 4.5:1 for text)
+Text Background Ratio Result
+Deep Navy White / Cloud 16.52 / 15.46 Pass
+Slate White / Cloud 6.93 / 6.49 Pass
+White Deep Navy 16.52 Pass
+Deep Navy Emerald 6.51 Pass
+Deep Teal White / Cloud 5.47 / 5.12 Pass
+Deep Teal Mint Tint 4.83 Pass
+White Deep Teal 5.47 Pass
+Amber Text Amber Tint 6.37 Pass
+White Red 6.47 Pass
+White on Emerald or Emerald on White 2.54 Fail, never used
+Status colours: every status has a colour, an icon and a word
+✓ Verified listing checked by an administrator ◷  Awaiting verification new or edited listing Hidden listing taken offline
+◷  Pending enquiry waiting for a reply ✓ Approved enquiry accepted ✕  Declined enquiry refused
+ Cancelled withdrawn by the student
+Colour rules
+ One Emerald button per screen, for the main action Search
+hostels, Send enquiry, Save listing). All other buttons are Navy or
+outlined.
+ Emerald is never used for text on light backgrounds, and white
+text is never placed on Emerald. Green text is Deep Teal; text on
+Emerald is Deep Navy.
+ Amber and red carry meaning only. They are never decorative.
+ Links are Deep Teal and underlined on hover and keyboard focus.
+Changes made to brand board v1.0
+ Green text switched from Emerald to Deep Teal Emerald on
+white is only 2.541.
+ Amber and red added to the palette; they were used in
+badges but not defined.
+ Approved badge changed from blue to green, and a
+Declined badge added.
+ Button roles defined: Emerald = main action, Navy =
+standard.
+ Navigation reduced to Browse hostels and How it works;
+"Locations" and "For hostel owners" had no screens behind
+them. Price written as "/ year" everywhere.
+ Hero headline changed to "Find your room near KNUST.";
+"Find your people" suggests roommate matching, which
+Roomigo does not offer.
+2 / 5
+
+===== PAGE BREAK =====
+
+roomigo DESIGN DOCUMENT · TYPOGRAPHY, COMPONENTS, LAYOUT
+05 · TYPOGRAPHY
+Plus Jakarta Sans for headings, Inter for everything else
+Aa Plus Jakarta Sans
+Headings, hostel names, prices · weights 600, 700, 800 · rounded
+and friendly at large sizes
+Aa Inter
+Body, labels, buttons, forms, tables · weights 400, 500, 600 · built for
+screens, clear numerals
+Find your room near KNUST.
+Verified hostels you can trust
+Compare prices, walking time to campus and amenities in
+one place, then send a booking enquiry in a minute.
+VERIFIED HOSTELS
+Both are free on Google Fonts. Fallback: system-ui, Segoe UI, Arial,
+sans-serif.
+Style Font · weight Desktop Mobile Used for
+Display Jakarta · 800 48 / 56 32 / 40 Hero headline S1 only)
+H1 Jakarta · 700 36 / 44 28 / 36 Page title, one per screen
+H2 Jakarta · 700 28 / 36 24 / 32 Section headings
+H3 Jakarta · 600 20 / 28 18 / 26 Card titles, hostel names
+Price Jakarta · 700 20 / 28 18 / 26 Rent amounts
+Body Inter · 400 16 / 24 16 / 24 Paragraphs, form inputs
+Button Inter · 600 16 / 24 16 / 24 Button labels
+Small Inter · 400 14 / 20 14 / 20 Walking time, helper text
+Label Inter · 600 14 / 20 14 / 20 Form labels, navigation
+Caption Inter · 600 12 / 16 12 / 16 Badges, section labels
+Sizes are font size / line height in px. Rules: body text is never below 16px; one H1
+per screen and no skipped levels; sentence case for headings and buttons ("Browse
+hostels"); text is left-aligned; paragraphs are at most 65 characters wide; Display and
+H1 use 0.02em letter spacing; section labels are uppercase Caption in Deep Teal.
+06 · COMPONENTS
+One set of parts, used on every screen
+Sample Hostel ✓ Verified
+8 min walk to campus · Ayeduase
+Wi-Fi Water 24/7 Security
+GH ₵  4,200
+/ year
+View details
+Hostel card. 12px radius, 169 photo. The
+whole card is one link. Hover: raised shadow.
+Buttons Search View details View all Learn more → Delete Disabled
+Main Emerald, one per screen) · Standard Navy) · Secondary (outline) · Text link · Destructive ·
+Disabled. Height 48px 44px minimum), 8px radius. Hover: Emerald  Deep Teal with white
+text; Navy  Midnight Blue.
+Form fields
+Default
+Location
+Focus
+Ayeduase
+Error
+Room type
+⚠ Select a room type.
+Label always visible above the field. Errors are written under the field in red with an icon.
+Filter chips ✓ Wi-Fi Water 24/7 Self-contained Selected chips are Navy with a tick.
+Search bar Location, e.g. Ayeduase Max budget GH₵ / year) Search hostels
+Alerts ✓ Enquiry sent. Track it in your dashboard. ⚠ Email or password is incorrect.
+07 · LAYOUT AND RESPONSIVE DESIGN
+One layout that adapts to mobile, tablet and desktop
+Element Mobile ≤767px Tablet 768–1023px Desktop ≥1024px
+Grid 4 col, 16px margin 8 col, 24px margin 12 col, max 1200px
+Navigation Logo  Menu
+button
+Full links Full links
+Hostel cards 1 per row 2 per row 3 per row
+Filters Button, full-screen
+sheet
+Button, full-screen
+sheet
+Sidebar on the left
+Hostel details 1 column, enquiry
+bar at bottom
+1 column, enquiry
+bar at bottom
+2 columns, sticky
+enquiry card
+Tables Rows become
+cards
+Table Table
+Manager menu Two tabs Two tabs Sidebar on the left
+Property Value
+Spacing scale 4, 8, 12, 16, 24, 32, 48, 64px only
+Corner radius 8px buttons, inputs · 12px cards · pill badges
+Card White, 1px Border, soft 1px shadow
+Icons Lucide outline, 20px, with a text label
+Touch targets At least 44  44px
+Keyboard focus 2px Emerald ring with Mint glow
+Photos 169, cropped to fill, with alt text
+3 / 5
+Hostel photo
+
+===== PAGE BREAK =====
+
+roomigo DESIGN DOCUMENT · WIREFRAMES 1 OF 2
+08 · WIREFRAMES
+Desktop wireframes: the student journey (S1 to S4)
+Wireframes fix layout and content; the colours and type from sections 04 to 06 are applied on top. Key: crossed box = photo · grey bar = text
+· dark button = the screen's main action Emerald in the build) · outlined button = standard action · underlined = link.
+roomigo Browse hostels How it works Sign in Create account
+Find your room near KNUST.
+Compare verified hostels by price, walking time and amenities.
+Location Max budget GH₵ / year) Search hostels
+Verified hostels View all hostels
+Hostel name
+✓ Verified
+0 min walk · Area
+Wi-Fi Water
+GH ₵  0,000 / year
+View details
+Hostel name
+✓ Verified
+0 min walk · Area
+Wi-Fi Water
+GH ₵  0,000 / year
+View details
+Hostel name
+✓ Verified
+0 min walk · Area
+Wi-Fi Water
+GH ₵  0,000 / year
+View details
+Popular areas
+Ayeduase Kotei Bomso Kentinkrono
+How Roomigo works
+1 Search and filter 2 Compare in detail 3 Send an enquiry
+roomigo Links · Listings shown are sample data
+S1 Home. The search bar opens S2 with the location and budget applied.
+Each card opens S3. Popular areas open S2 filtered to that area. The only
+Emerald button is Search hostels.
+roomigo Browse hostels How it works Sign in Create account
+Ayeduase Max budget GH₵ / year) Search hostels
+Filters Clear all
+Budget per year
+GH₵
+Min Max
+Walk to campus
+Any
+Under 10 min
+10 to 20 min
+Over 20 min
+Amenities
+Wi-Fi
+Water 24/7
+Backup power
+Security
+Kitchen
+Self-contained
+Apply filters
+0 hostels found Sort by Price: low to high ▾
+Under 10 min ✕ Wi-Fi ✕
+Hostel name
+✓ Verified
+0 min walk · Area
+GH ₵  0,000 / year
+View details
+Hostel name
+✓ Verified
+0 min walk · Area
+GH ₵  0,000 / year
+View details
+Hostel name
+✓ Verified
+0 min walk · Area
+GH ₵  0,000 / year
+View details
+Previous 1 2 3 Next
+S2 Browse hostels. Filters cover the proposal's three parameters: budget,
+proximity and amenities. Each applied filter appears as a removable chip. Nine
+cards per page. No match shows "No hostels match these filters" with Clear all.
+roomigo Browse hostels How it works Sign in Create account
+Home / Browse hostels / Hostel name
+Hostel name ✓ Verified
+0 min walk to campus · Area
+About this hostel
+Rooms and prices
+Room type Price / year Availability
+1 in a room GH₵ 0,000 0 rooms left
+2 in a room GH₵ 0,000 0 rooms left
+4 in a room GH₵ 0,000 Full
+Facilities
+✓ Wi-Fi ✓ Water 24/7 ✓ Backup power
+✓ Security ✓ Kitchen ✓ Study room
+Location
+Area, nearest landmark, walking time to campus
+From
+GH ₵  0,000 / year
+0 rooms available
+Send enquiry
+Managed by: name
+roomigo Footer, same as S1
+S3 Hostel details. Any photo opens a full-screen gallery with Previous, Next
+and Close. The facility checklist lists everything the hostel offers. The enquiry
+card stays visible while scrolling; Send enquiry opens S4, or S5 first if signed
+out.
+roomigo Browse hostels How it works Student name ▾
+ Back to hostel
+Send a booking enquiry
+* Required
+Your details
+Full name *
+From account
+Phone number *
+From account
+Email address *
+From account
+Enquiry details
+Room type *
+Select a room type ▾
+⚠ Select a room type.
+Preferred move-in date *
+DD / MM / YYYY
+Message to the manager (optional)
+ 
+Send enquiry Cancel
+Hostel name
+0 min walk · Area
+GH ₵  0,000 / year
+✓  Enquiry sent. The manager will reply soon. View in dashboard
+Replaces the form after a successful submission.
+S4 Booking enquiry. Name, phone and email are filled in from the student's
+account. The Room type field shows the error state: thicker border and a
+message under the field. The summary on the right confirms which hostel the
+enquiry is for.
+4 / 5
+View all photos
+
+===== PAGE BREAK =====
+
+roomigo DESIGN DOCUMENT · WIREFRAMES 2 OF 2
+Desktop wireframes: accounts and management (S5 to S8)
+roomigo Browse hostels How it works
+Sign in Create account
+Welcome back
+Email address
+name@example.com
+Password
+•••••••• Show
+Sign in
+⚠ Error message appears here
+Sign in Create account
+I am a *
+Student Hostel manager
+Full name *
+Your full name
+Email *
+name@example.com
+Phone *
+024 000 0000
+Password *
+8 characters
+Confirm *
+Repeat
+Create account
+S5 Sign in / Create account. One screen, two tabs (shown side by side
+here). The role chosen decides where the user lands: students on S6,
+managers on S7. Administrator accounts are created by the Roomigo team only.
+roomigo Browse hostels How it works Student name ▾
+My enquiries
+Track the status of every enquiry you have sent.
+Browse hostels
+Pending 0 Approved 0 Declined 0
+All Pending Approved Declined
+Hostel Room type Move-in Status Actions
+Hostel name 2 in a room DD/MM/YY ◷  Pending View hostel · Cancel
+Hostel name 1 in a room DD/MM/YY ✓ Approved View hostel
+Hostel name 4 in a room DD/MM/YY ✕  Declined View hostel
+S6 Student dashboard. Tabs filter the table by status. Cancel appears only
+while an enquiry is Pending and asks for confirmation. With no enquiries, the
+table is replaced by "You have no enquiries yet" and a Browse hostels button.
+roomigo
+Listings
+Enquiries
+Manager name
+Sign out
+Listings  Add listing
+Search listings by name Status: All ▾
+Hostel Area From Status Actions
+Hostel name Ayeduase GH₵ 0,000 ✓ Verified Edit · Hide · Delete
+Hostel name Kotei GH₵ 0,000 ◷  Awaiting Verify · Edit · Delete
+Hostel name Bomso GH₵ 0,000 Hidden Edit · Show · Delete
+Add or edit listing ✕
+Hostel name * Area * ▾ Walk (min) *
+Description *  Photos * Amenities ☐☐☐
+Room type ▾ Price / year Rooms available  Room
+Save listing Cancel
+S7 Manage listings. Add listing and Edit open the form shown below the
+table. Hide takes a listing offline without deleting it. Delete asks for
+confirmation. Verify is shown to administrators only; a listing is public only
+once Verified.
+roomigo
+Listings
+Enquiries
+Manager name
+Sign out
+Enquiries
+Pending 0 Approved 0 Declined 0 All
+Student Hostel Status
+Student name Hostel name ◷  Pending
+Student name Hostel name ◷  Pending
+Student name Hostel name ◷  Pending
+Student name Hostel name ◷  Pending
+Enquiry details
+Student name
+Email · phone
+Hostel, room type
+Move-in: DD/MM/YY
+Approve
+Decline
+S8 Manage enquiries. Pending is open by default. Selecting a row shows
+the student's contact details and message. Approve and Decline update the
+status the student sees on S6. Declining asks for confirmation first.
+Mobile wireframes (up to 767px)
+roomigo ☰  Menu
+Find your room near
+KNUST.
+Location
+Max budget GH₵ / year)
+Search hostels
+Verified hostels
+Hostel name ✓ Verified
+0 min walk · Area
+GH ₵  0,000 / year View
+View all hostels
+Popular areas
+Ayeduase Kotei
+S1 Home
+roomigo ☰  Menu
+Ayeduase
+Filters 2 Sort ▾
+0 hostels found
+Under 10 min ✕ Wi-Fi ✕
+Hostel name ✓ Verified
+0 min walk · Area
+GH ₵  0,000 / year View
+Hostel name
+Previous 1 of 3 Next
+S2 Browse hostels
+roomigo ☰  Menu
+ Browse hostels
+● ○ ○ ○ ○ swipe
+Hostel name ✓ Verified
+0 min walk to campus · Area
+Rooms and prices
+2 in a room GH₵ 0,000
+4 in a room GH₵ 0,000
+Facilities
+✓ Wi-Fi ✓ Water 24/7
+From
+GH₵ 0,000 Send enquiry
+S3 Hostel details
+What changes on mobile
+Every screen becomes one column;
+navigation links move behind a Menu
+button.
+The search fields stack and the button
+spans the full width.
+Filters open from a Filters button,
+showing the number applied, as a full-
+screen sheet.
+The photo gallery shows one photo at
+a time, changed by swiping.
+The enquiry card becomes a bar fixed
+to the bottom of the screen.
+Forms S4, S5 show one field per row;
+tables S6, S7, S8 become cards with
+full-width buttons.
+The manager sidebar becomes two
+tabs: Listings and Enquiries.
+5 / 5

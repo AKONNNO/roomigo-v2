@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Search, Shield, Users, Star, ArrowRight, Building2 } from 'lucide-react';
 import PropertyCard from '../components/PropertyCard';
 import { useProperty } from '../context/useProperty';
+import { locations } from '../data/additionalProperties';
 import './Home.css';
 
 // Animated counter that counts up from 0 to `target` when it appears on screen
@@ -29,6 +30,9 @@ const StatCounter = ({ target, suffix = '', duration = 2000 }) => {
 
 const Home = () => {
   const { propertiesList } = useProperty();
+  const navigate = useNavigate();
+  const [heroLocation, setHeroLocation] = useState('All Locations');
+  const [heroBudget, setHeroBudget] = useState('');
   const featuredProperties = propertiesList.filter(p => p.verified).slice(0, 3);
   const featuredForDisplay = featuredProperties.length > 0 ? featuredProperties : propertiesList.slice(0, 3);
 
@@ -36,15 +40,40 @@ const Home = () => {
     <div className="home-page">
       {/* Hero Section */}
       <section className="hero">
-        <div className="hero-overlay"></div>
         <div className="hero-content">
-          <h1>Find Your Perfect Home Away From Home</h1>
-          <p>Discover verified hostels and accommodation near KNUST campus. No more middlemen, no more stress.</p>
-          <div className="hero-search">
-            <Link to="/search" className="hero-search-btn">
-              <Search size={20} /> Find Hostel Now
-            </Link>
-          </div>
+          <h1>Find your room near&nbsp;KNUST.</h1>
+          <p>Compare verified hostels by price, walking time and amenities.</p>
+          <form className="hero-search" onSubmit={(e) => {
+            e.preventDefault();
+            const params = new URLSearchParams();
+            if (heroLocation && heroLocation !== 'All Locations') params.set('location', heroLocation);
+            if (heroBudget) params.set('budget', heroBudget);
+            navigate(`/search?${params.toString()}`);
+          }}>
+            <span className="hero-search-icon"><Search size={18} /></span>
+            <select
+              aria-label="Location"
+              value={heroLocation}
+              onChange={(e) => setHeroLocation(e.target.value)}
+              className="hero-select"
+            >
+              <option value="All Locations">All locations</option>
+              {locations.map(loc => <option key={loc} value={loc}>{loc}</option>)}
+            </select>
+            <span className="hero-search-divider"></span>
+            <span className="hero-search-icon cedi">GH₵</span>
+            <input
+              type="number"
+              min="0"
+              placeholder="Max budget / year"
+              value={heroBudget}
+              onChange={(e) => setHeroBudget(e.target.value)}
+              className="hero-input"
+            />
+            <button type="submit" className="hero-search-btn">
+              Search hostels
+            </button>
+          </form>
           <div className="hero-stats">
             <div className="stat">
               <StatCounter target={500} suffix="+" />
@@ -92,17 +121,35 @@ const Home = () => {
       </section>
 
       {/* Featured Listings */}
-      <section className="featured-listings">
+      <section className="featured-listings" id="verified">
         <div className="container">
           <div className="section-header">
-            <h2>Featured Hostels</h2>
+            <div>
+              <span className="section-label">Verified hostels</span>
+              <h2>Browse verified hostels</h2>
+            </div>
             <Link to="/search" className="view-all">
-              View All <ArrowRight size={16} />
+              View all hostels <ArrowRight size={16} />
             </Link>
           </div>
           <div className="listings-grid">
             {featuredForDisplay.map(property => (
               <PropertyCard key={property.id} property={property} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Popular Areas */}
+      <section className="popular-areas">
+        <div className="container">
+          <span className="section-label">Popular areas</span>
+          <h2>Where students live</h2>
+          <div className="areas-grid">
+            {['Ayeduase', 'Kotei', 'Bomso', 'Kentinkrono'].map(area => (
+              <Link key={area} to={`/search?location=${encodeURIComponent(area)}`} className="area-chip">
+                <Building2 size={18} /> {area}
+              </Link>
             ))}
           </div>
         </div>
@@ -118,29 +165,25 @@ const Home = () => {
       </section>
 
       {/* How It Works */}
-      <section className="how-it-works">
+      <section className="how-it-works" id="how-it-works">
         <div className="container">
-          <h2>How It Works</h2>
+          <span className="section-label">How Roomigo works</span>
+          <h2>Three steps to your new room</h2>
           <div className="steps">
             <div className="step">
               <div className="step-number">1</div>
-              <h3>Search</h3>
-              <p>Browse and filter hostels based on your preferences and budget.</p>
+              <h3>Search and filter</h3>
+              <p>Filter verified hostels by location, budget, walking time and amenities.</p>
             </div>
             <div className="step">
               <div className="step-number">2</div>
-              <h3>Compare</h3>
-              <p>View detailed information, photos, and reviews to make an informed decision.</p>
+              <h3>Compare in detail</h3>
+              <p>Compare prices, room configurations and facilities side by side.</p>
             </div>
             <div className="step">
               <div className="step-number">3</div>
-              <h3>Book</h3>
-              <p>Submit a booking enquiry directly to the hostel manager.</p>
-            </div>
-            <div className="step">
-              <div className="step-number">4</div>
-              <h3>Move In</h3>
-              <p>Get confirmation and move into your new home!</p>
+              <h3>Send an enquiry</h3>
+              <p>Send a booking enquiry to the hostel manager and track it in your dashboard.</p>
             </div>
           </div>
         </div>
