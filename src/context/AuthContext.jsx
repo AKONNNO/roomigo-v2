@@ -6,13 +6,14 @@ const USERS_KEY = 'roomigo_managed_users';
 // Seed account for role-based access demonstration. This is also
 // the fallback registry entry so the demo login keeps working.
 const DEMO_USERS = [
-  { id: 'demo-student', password: 'student123', email: 'student@roomigo.gh', name: 'Kofi Student', role: 'student', studentId: '22512172', phone: '', gender: '' }
+  { id: 'demo-student', password: 'student123', email: 'student@roomigo.gh', name: 'Kofi Student', role: 'student', studentId: '22512172', phone: '', gender: '' },
+  { id: 'demo-admin', password: 'admin123', email: 'admin@roomigo.gh', name: 'Site Admin', role: 'admin', studentId: '', phone: '', gender: '' }
 ];
 
 // Legacy demo accounts removed from the app. Still filtered out of the
 // persisted registry so any browser that stored them earlier can't
 // log in with them anymore.
-const LEGACY_DEMO_IDS = ['demo-manager', 'demo-admin'];
+const LEGACY_DEMO_IDS = ['demo-manager'];
 
 const toSessionUser = (account) => ({
   id: account.id,
@@ -32,18 +33,23 @@ export const AuthProvider = ({ children }) => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  // Registry of all managed accounts (students + hostel managers),
-  // seeded with the demo account on first load. Legacy demo manager/admin
-  // entries left over in localStorage are filtered out.
+  // Registry of all managed accounts (students + hostel managers + admin),
+  // seeded with the demo accounts on first load. Demo accounts are always
+  // merged back in (deduped by id) so the demo logins keep working even for
+  // browsers that already persisted a registry. Legacy demo entries left over
+  // in localStorage are filtered out.
   const [users, setUsers] = useState(() => {
     const stored = localStorage.getItem(USERS_KEY);
+    let storedUsers = [];
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        return (Array.isArray(parsed) ? parsed : []).filter(u => !LEGACY_DEMO_IDS.includes(u.id));
+        storedUsers = Array.isArray(parsed) ? parsed : [];
       } catch { /* fall through */ }
     }
-    return DEMO_USERS;
+    const filtered = storedUsers.filter(u => !LEGACY_DEMO_IDS.includes(u.id));
+    const demoIds = DEMO_USERS.map(d => d.id);
+    return [...DEMO_USERS, ...filtered.filter(u => !demoIds.includes(u.id))];
   });
 
   useEffect(() => {
