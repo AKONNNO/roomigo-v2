@@ -11,6 +11,7 @@ export const properties = [
     rooms: 24,
     availableRooms: 8,
     roomTypes: [1, 2, 3],
+    roomPrices: { 1: 4000, 2: 3000, 3: 2500 },
     gender: "Mixed",
     images: [
       "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800",
@@ -34,6 +35,7 @@ export const properties = [
     rooms: 16,
     availableRooms: 5,
     roomTypes: [2, 4],
+    roomPrices: { 2: 1800, 4: 1500 },
     gender: "Female Only",
     images: [
       "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800",
@@ -57,6 +59,7 @@ export const properties = [
     rooms: 40,
     availableRooms: 12,
     roomTypes: [1, 2, 3, 4],
+    roomPrices: { 1: 4500, 2: 3500, 3: 3200, 4: 2800 },
     gender: "Male Only",
     images: [
       "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=800",

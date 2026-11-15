@@ -11,8 +11,8 @@ const PropertyDetails = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
   const { createEnquiry } = useBooking();
-  const { propertiesList } = useProperty();
-  const property = propertiesList.find(p => p.id === id);
+  const { getProperty } = useProperty();
+  const property = getProperty(id);
   const roomTypes = property?.roomTypes || [];
   const [currentImage, setCurrentImage] = useState(0);
   const [showForm, setShowForm] = useState(false);
@@ -48,8 +48,13 @@ const PropertyDetails = () => {
     setTimeout(() => { setShowForm(false); setSubmitted(false); }, 3000);
   };
 
-  // Per-person price split across occupants of the room configuration
-  const priceFor = (rt) => Math.round(property.price / rt);
+  // Price for a room type: use the explicit per-room-type price when
+  // defined, otherwise fall back to the property's headline price.
+  const priceFor = (rt) => (
+    property.roomPrices && property.roomPrices[rt] != null
+      ? property.roomPrices[rt]
+      : property.price
+  );
 
 
   return (
@@ -89,7 +94,7 @@ const PropertyDetails = () => {
               {(roomTypes.length > 0 ? (
                 <div className="rooms-table">
                   <div className="rooms-row rooms-head">
-                    <span>Room type</span><span>Price / year</span><span>Availability</span>
+                    <span>Room type</span><span>Price ({property.priceType.replace('per ', '')})</span><span>Availability</span>
                   </div>
                   {roomTypes.map(rt => (
                     <button
@@ -124,7 +129,7 @@ const PropertyDetails = () => {
           </div>
           <aside className="details-sidebar">
             <div className="booking-card">
-              <div className="price-section"><span className="price">GHS {property.price.toLocaleString()}</span><span className="price-type">{property.priceType}</span></div>
+              <div className="price-section"><span className="price">GHS {(activeRoomType ? priceFor(activeRoomType) : property.price).toLocaleString()}</span><span className="price-type">{property.priceType}{activeRoomType ? ` • ${activeRoomType} in a room` : ''}</span></div>
               <div className="manager-info"><h3>Manager: {property.manager.name}</h3>
                 <div className="contact-buttons">
                   <a href={`tel:${property.manager.phone}`} className="contact-btn phone"><Phone size={18} /> Call</a>

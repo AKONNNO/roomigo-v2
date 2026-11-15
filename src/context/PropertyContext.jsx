@@ -11,18 +11,25 @@ export const PropertyProvider = ({ children }) => {
     const parsed = stored ? JSON.parse(stored) : allInitial;
     // Backfill roomTypes for properties saved before the room-type feature
     // was added, using the seed data as the source of truth.
-    return parsed.map(p =>
-      p.roomTypes && p.roomTypes.length > 0
-        ? p
-        : { ...p, roomTypes: allInitial.find(s => s.id === p.id)?.roomTypes || [] }
-    );
+    return parsed.map(p => {
+      const seed = allInitial.find(s => s.id === p.id) || {};
+      const hasRoomTypes = p.roomTypes && p.roomTypes.length > 0;
+      const hasRoomPrices = p.roomPrices && Object.keys(p.roomPrices).length > 0;
+      return {
+        ...p,
+        roomTypes: hasRoomTypes ? p.roomTypes : (seed.roomTypes || []),
+        roomPrices: hasRoomPrices ? p.roomPrices : (seed.roomPrices || {})
+      };
+    });
   });
 
   useEffect(() => {
     localStorage.setItem('roomigo_properties', JSON.stringify(propertiesList));
   }, [propertiesList]);
 
-  const getProperty = (id) => propertiesList.find(p => p.id === Number(id));
+  // Normalize both sides to string so numeric seed ids (1) and the
+  // string param from the URL ("1") always match.
+  const getProperty = (id) => propertiesList.find(p => String(p.id) === String(id));
 
   const addProperty = (data) => {
     // images may arrive as an array (Admin/Manager buildProperty) or a

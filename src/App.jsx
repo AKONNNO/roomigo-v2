@@ -4,6 +4,7 @@ import { BookingProvider } from './context/BookingContext';
 import { PropertyProvider } from './context/PropertyContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Search from './pages/Search';
@@ -21,6 +22,7 @@ function App() {
       <BookingProvider>
         <PropertyProvider>
           <Router>
+            <ScrollToTop />
             <div className="app">
               <Navbar />
               <main className="main-content">
