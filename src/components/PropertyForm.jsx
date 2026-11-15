@@ -12,6 +12,7 @@ const PropertyForm = ({ initialData = {}, onSubmit, onCancel, submitLabel = 'Sav
     rooms: initialData.rooms || '',
     availableRooms: initialData.availableRooms || '',
     roomTypes: initialData.roomTypes ? [...initialData.roomTypes] : [],
+    roomPrices: initialData.roomPrices ? { ...initialData.roomPrices } : {},
     gender: initialData.gender || 'Mixed',
     amenities: initialData.amenities ? initialData.amenities.join(', ') : '',
     description: initialData.description || '',
@@ -26,18 +27,26 @@ const PropertyForm = ({ initialData = {}, onSubmit, onCancel, submitLabel = 'Sav
   };
 
   const handleRoomTypeToggle = (value) => {
-    setForm({
-      ...form,
-      roomTypes: form.roomTypes.includes(value)
-        ? form.roomTypes.filter(v => v !== value)
-        : [...form.roomTypes, value]
-    });
+    const into = !form.roomTypes.includes(value);
+    const roomTypes = into ? [...form.roomTypes, value] : form.roomTypes.filter(v => v !== value);
+    const roomPrices = { ...form.roomPrices };
+    if (!into) delete roomPrices[value];
+    setForm({ ...form, roomTypes, roomPrices });
+  };
+
+  const handleRoomPriceChange = (value, price) => {
+    setForm({ ...form, roomPrices: { ...form.roomPrices, [value]: price } });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.name || !form.address || !form.price) {
-      alert('Please fill in all required fields (name, address, price).');
+    const roomPriceCount = form.roomTypes.filter(rt => Number(form.roomPrices[rt]) > 0).length;
+    if (!form.name || !form.address) {
+      alert('Please fill in the hostel name and address.');
+      return;
+    }
+    if (!form.price && roomPriceCount === 0) {
+      alert('Please set a price — either a starting price or a price for each room configuration.');
       return;
     }
     onSubmit(form);
@@ -59,8 +68,8 @@ const PropertyForm = ({ initialData = {}, onSubmit, onCancel, submitLabel = 'Sav
           <input name="distance" value={form.distance} onChange={handleChange} placeholder="e.g. 1.5 km" />
         </div>
         <div className="form-field">
-          <label>Price (GHS) *</label>
-          <input name="price" type="number" value={form.price} onChange={handleChange} placeholder="e.g. 2500" required />
+          <label>Starting Price (GHS) — shown if a room has no set price</label>
+          <input name="price" type="number" value={form.price} onChange={handleChange} placeholder="e.g. 2500" />
         </div>
         <div className="form-field">
           <label>Price Type</label>
@@ -93,6 +102,23 @@ const PropertyForm = ({ initialData = {}, onSubmit, onCancel, submitLabel = 'Sav
               </label>
             ))}
           </div>
+          {form.roomTypes.length > 0 && (
+            <div className="room-price-grid">
+              {[...form.roomTypes].sort((a, b) => a - b).map(rt => (
+                <div key={rt} className="room-price-field">
+                  <span className="roomtype-form-option room-price-tag">{rt} in a Room</span>
+                  <input
+                    name={`roomPrice-${rt}`}
+                    type="number"
+                    min="0"
+                    placeholder="Price (GHS)"
+                    value={form.roomPrices[rt] || ''}
+                    onChange={(e) => handleRoomPriceChange(rt, e.target.value)}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         <div className="form-field">
           <label>Gender</label>

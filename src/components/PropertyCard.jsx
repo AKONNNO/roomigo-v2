@@ -40,7 +40,15 @@ const PropertyCard = ({ property }) => {
           <div className="property-roomtypes">
             <span className="roomtypes-label">Rooms:</span>
             {property.roomTypes.map(rt => (
-              <span key={rt} className="roomtype-tag">{rt} in a Room</span>
+              <span key={rt} className="roomtype-tag">
+                {rt} in a Room
+                {property.roomPrices && property.roomPrices[rt] != null && (
+                  <>
+                    <br />
+                    <em className="roomtype-price">GHS {Number(property.roomPrices[rt]).toLocaleString()}</em>
+                  </>
+                )}
+              </span>
             ))}
           </div>
         )}

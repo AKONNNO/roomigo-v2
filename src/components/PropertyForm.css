@@ -49,3 +49,30 @@
 .roomtype-form-option:hover { border-color: var(--teal); }
 .roomtype-form-option:has(input:checked) { background: var(--mint); border-color: var(--emerald); color: var(--teal); }
 .roomtype-form-option input { accent-color: var(--teal); cursor: pointer; }
+.room-price-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+.room-price-field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.room-price-field .room-price-tag {
+  white-space: nowrap;
+  font-weight: 600;
+  margin: 0;
+}
+.room-price-field input {
+  flex: 1;
+  min-width: 0;
+}
+.room-price-hint {
+  grid-column: 1 / -1;
+  font-size: 0.8rem;
+  color: var(--slate);
+  margin: 0.25rem 0 0;
+}

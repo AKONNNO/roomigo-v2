@@ -24,21 +24,30 @@ const Manager = () => {
   const managedEnquiries = enquiries.filter(e => ids.includes(e.propertyId) || propsForDisplay.some(p => p.name === e.propertyName));
   const managedBookings = bookings.filter(b => ids.includes(b.propertyId) || propsForDisplay.some(p => p.name === b.propertyName));
 
-  const buildProperty = (form) => ({
-    name: form.name,
-    address: form.address,
-    distance: form.distance,
-    price: Number(form.price),
-    priceType: form.priceType,
-    rooms: Number(form.rooms) || 0,
-    availableRooms: form.availableRooms !== '' ? Number(form.availableRooms) : (Number(form.rooms) || 0),
-    roomTypes: form.roomTypes || [],
-    gender: form.gender,
-    amenities: form.amenities ? form.amenities.split(',').map(s => s.trim()).filter(Boolean) : [],
-    description: form.description,
-    images: form.images ? form.images.split(',').map(s => s.trim()).filter(Boolean) : undefined,
-    manager: { name: form.managerName || user.name, phone: form.managerPhone || '', email: form.managerEmail || user.email }
-  });
+  const buildProperty = (form) => {
+    const roomPrices = (form.roomTypes || []).reduce((acc, rt) => {
+      const v = Number(form.roomPrices && form.roomPrices[rt]);
+      if (!Number.isNaN(v) && v > 0) acc[rt] = v;
+      return acc;
+    }, {});
+    const firstRoomPrice = roomPrices[(form.roomTypes || [])[0]];
+    return {
+      name: form.name,
+      address: form.address,
+      distance: form.distance,
+      price: Number(form.price) || firstRoomPrice || 0,
+      priceType: form.priceType,
+      rooms: Number(form.rooms) || 0,
+      availableRooms: form.availableRooms !== '' ? Number(form.availableRooms) : (Number(form.rooms) || 0),
+      roomTypes: form.roomTypes || [],
+      roomPrices,
+      gender: form.gender,
+      amenities: form.amenities ? form.amenities.split(',').map(s => s.trim()).filter(Boolean) : [],
+      description: form.description,
+      images: form.images ? form.images.split(',').map(s => s.trim()).filter(Boolean) : undefined,
+      manager: { name: form.managerName || user.name, phone: form.managerPhone || '', email: form.managerEmail || user.email }
+    };
+  };
 
   const handleAdd = (form) => { addProperty(buildProperty(form)); setShowAddForm(false); };
   const handleEdit = (form) => { updateProperty(editing.id, buildProperty(form)); setEditing(null); };

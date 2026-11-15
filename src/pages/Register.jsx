@@ -11,7 +11,7 @@ const Register = () => {
     name: '', email: '', phone: '', studentId: '', gender: '', password: '', confirmPassword: '',
     role: 'student',
     hostelName: '', hostelAddress: '', distance: '', price: '', priceType: 'per semester',
-    rooms: '', availableRooms: '', roomTypes: [], hostelGender: 'Mixed', amenities: [], images: '', description: ''
+    rooms: '', availableRooms: '', roomTypes: [], roomPrices: {}, hostelGender: 'Mixed', amenities: [], images: '', description: ''
   });
   const [error, setError] = useState('');
   const { register } = useAuth();
@@ -23,6 +23,22 @@ const Register = () => {
   const togglePill = (key, value) => {
     const list = formData[key];
     setField(key, list.includes(value) ? list.filter(v => v !== value) : [...list, value]);
+  };
+
+  // Selecting a room configuration shows a price input for it; deselecting
+  // removes that price so we never keep stale per-room prices.
+  const toggleRoomType = (value) => {
+    const selected = formData.roomTypes.includes(value);
+    const roomTypes = selected
+      ? formData.roomTypes.filter(v => v !== value)
+      : [...formData.roomTypes, value];
+    const roomPrices = { ...formData.roomPrices };
+    if (selected) delete roomPrices[value];
+    setFormData({ ...formData, roomTypes, roomPrices });
+  };
+
+  const setRoomPrice = (rt, value) => {
+    setFormData({ ...formData, roomPrices: { ...formData.roomPrices, [rt]: value } });
   };
 
   const handleSubmit = (e) => {
@@ -39,21 +55,33 @@ const Register = () => {
       setError('As a hostel manager, please fill in the hostel name, location and total rooms.');
       return;
     }
+    const roomPriceCount = formData.roomTypes.filter(rt => Number(formData.roomPrices[rt]) > 0).length;
+    if (formData.role === 'manager' && !formData.price && roomPriceCount === 0) {
+      setError('Please set a price — either a starting price or a price for each selected room configuration.');
+      return;
+    }
     const result = register(formData);
     if (!result.success) {
       setError(result.message);
       return;
     }
     if (formData.role === 'manager') {
+      const roomPrices = {};
+      formData.roomTypes.forEach(rt => {
+        const v = Number(formData.roomPrices[rt]);
+        if (!Number.isNaN(v) && v > 0) roomPrices[rt] = v;
+      });
+      const firstRoomPrice = roomPrices[formData.roomTypes[0]];
       addProperty({
         name: formData.hostelName,
         address: formData.hostelAddress,
         distance: formData.distance,
-        price: Number(formData.price) || 0,
+        price: Number(formData.price) || firstRoomPrice || 0,
         priceType: formData.priceType,
         rooms: Number(formData.rooms) || 0,
         availableRooms: formData.availableRooms !== '' ? Number(formData.availableRooms) : (Number(formData.rooms) || 0),
         roomTypes: formData.roomTypes.length ? formData.roomTypes : [1, 2],
+        roomPrices,
         gender: formData.hostelGender,
         amenities: formData.amenities,
         description: formData.description,
@@ -166,7 +194,7 @@ const Register = () => {
                   <input type="text" placeholder="e.g. 1.5 km" value={formData.distance} onChange={(e) => setField('distance', e.target.value)} />
                 </div>
                 <div className="form-group">
-                  <label>Price (GHS)</label>
+                  <label>Starting Price (GHS) — shown if a room has no set price</label>
                   <input type="number" placeholder="e.g. 2500" value={formData.price} onChange={(e) => setField('price', e.target.value)} />
                 </div>
               </div>
@@ -187,12 +215,33 @@ const Register = () => {
                 <div className="pill-options">
                   {roomTypeOptions.map(opt => (
                     <label key={opt.value} className={`pill ${formData.roomTypes.includes(opt.value) ? 'checked' : ''}`}>
-                      <input type="checkbox" checked={formData.roomTypes.includes(opt.value)} onChange={() => togglePill('roomTypes', opt.value)} />
+                      <input type="checkbox" checked={formData.roomTypes.includes(opt.value)} onChange={() => toggleRoomType(opt.value)} />
                       {opt.label}
                     </label>
                   ))}
                 </div>
               </div>
+
+              {formData.roomTypes.length > 0 && (
+                <div className="form-group">
+                  <label>Price for Each Room Configuration (GHS)</label>
+                  <div className="room-price-grid">
+                    {[...formData.roomTypes].sort((a, b) => a - b).map(rt => (
+                      <div key={rt} className="room-price-field">
+                        <span className="pill checked room-price-tag">{rt} in a Room</span>
+                        <input
+                          type="number"
+                          min="0"
+                          placeholder="e.g. 2500"
+                          value={formData.roomPrices[rt] || ''}
+                          onChange={(e) => setRoomPrice(rt, e.target.value)}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <p className="hostel-setup-hint">Set the price for each configuration you selected above.</p>
+                </div>
+              )}
 
               <div className="form-group">
                 <label>Amenities Offered</label>
