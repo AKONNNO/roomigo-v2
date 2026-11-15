@@ -37,6 +37,7 @@
 
 .footer-section a:hover {
   color: var(--emerald);
+  text-decoration: underline;
 }
 
 .footer-section p {

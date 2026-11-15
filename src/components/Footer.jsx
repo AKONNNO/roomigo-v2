@@ -33,8 +33,8 @@ const Footer = () => {
         
         <div className="footer-section">
           <h4>Contact</h4>
-          <p>📧 info@roomigo.gh</p>
-          <p>📱 +233 20 123 4567</p>
+          <p>📧 <a href="mailto:info@roomigo.gh">info@roomigo.gh</a></p>
+          <p>📱 <a href="tel:+233201234567">+233 20 123 4567</a></p>
           <p>📍 Kumasi, Ghana</p>
         </div>
       </div>
