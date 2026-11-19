@@ -1,3 +1,4 @@
+// Home page — developed by Prince Korankye Akonno
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, Shield, Users, Star, ArrowRight, Building2 } from 'lucide-react';

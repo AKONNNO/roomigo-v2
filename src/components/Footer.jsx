@@ -1,3 +1,4 @@
+// Footer component — coded by Prince Korankye Akonno
 import { Link } from 'react-router-dom';
 import './Footer.css';
 

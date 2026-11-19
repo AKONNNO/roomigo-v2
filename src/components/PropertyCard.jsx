@@ -1,3 +1,4 @@
+// PropertyCard component — coded by Prince Korankye Akonno
 import { Link } from 'react-router-dom';
 import { MapPin, Wifi, Shield, Star, Check } from 'lucide-react';
 import './PropertyCard.css';

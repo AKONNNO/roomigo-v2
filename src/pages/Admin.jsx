@@ -1,6 +1,7 @@
+// Admin page — developed by Prince Korankye Akonno
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Home, MessageSquare, Check, X, Eye, Plus, Trash2, Pencil, BadgeCheck, Users } from 'lucide-react';
+import { Shield, Home, MessageSquare, Check, X, Eye, Plus, Trash2, Pencil, BadgeCheck, Users, AlarmClock } from 'lucide-react';
 import { useAuth } from '../context/useAuth';
 import { useBooking } from '../context/useBooking';
 import { useProperty } from '../context/useProperty';
@@ -9,12 +10,30 @@ import './Admin.css';
 
 const Admin = () => {
   const { user, users, updateUserRole } = useAuth();
-  const { enquiries, bookings, updateEnquiryStatus, updateBookingStatus } = useBooking();
+  const { enquiries, bookings, updateEnquiryStatus, approveEnquiry, updateBookingStatus } = useBooking();
   const { propertiesList, addProperty, updateProperty, deleteProperty, toggleVerified } = useProperty();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('properties');
   const [editing, setEditing] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [approveId, setApproveId] = useState(null);
+  const [approveHours, setApproveHours] = useState('48');
+
+  // Ask how long the student has to pay, then approve.
+  const handleApprove = (id) => {
+    setApproveId(id);
+    setApproveHours('48');
+  };
+
+  const confirmApprove = () => {
+    const hours = Number(approveHours);
+    if (!hours || hours <= 0) {
+      alert('Please enter a valid number of hours for the payment window.');
+      return;
+    }
+    approveEnquiry(approveId, hours);
+    setApproveId(null);
+  };
 
   const buildProperty = (form) => {
     const roomPrices = (form.roomTypes || []).reduce((acc, rt) => {
@@ -123,10 +142,15 @@ const Admin = () => {
                       <tr key={e.id}>
                         <td>#{e.id}</td><td>{e.propertyName}</td><td>{e.name}</td><td>{e.email}</td>
                         <td><span className={`status ${e.status}`}>{e.status}</span></td>
-                        <td>{e.status === 'pending' && <>
-                          <button onClick={() => updateEnquiryStatus(e.id, 'approved')} className="action-btn approve"><Check size={16} /></button>
-                          <button onClick={() => updateEnquiryStatus(e.id, 'rejected')} className="action-btn reject"><X size={16} /></button>
-                        </>}</td>
+                        <td>
+                          {e.status === 'pending' && <>
+                            <button onClick={() => handleApprove(e.id)} className="action-btn approve" title="Approve (set payment window)"><Check size={16} /></button>
+                            <button onClick={() => updateEnquiryStatus(e.id, 'rejected')} className="action-btn reject"><X size={16} /></button>
+                          </>}
+                          {e.status === 'approved' && e.paymentStatus !== 'paid' && (
+                            <span className="status approved">Awaiting payment</span>
+                          )}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -196,6 +220,30 @@ const Admin = () => {
           )}
         </div>
       </div>
+
+      {approveId != null && (
+        <div className="approve-modal-overlay" onClick={() => setApproveId(null)}>
+          <div className="approve-modal" onClick={(ev) => ev.stopPropagation()}>
+            <div className="approve-modal-icon"><AlarmClock size={28} /></div>
+            <h4>Approve Enquiry &amp; Set Payment Window</h4>
+            <p>How many hours does the student have to complete payment after approval?</p>
+            <div className="approve-input-row">
+              <input
+                type="number"
+                min="1"
+                value={approveHours}
+                onChange={(e) => setApproveHours(e.target.value)}
+                placeholder="e.g. 48"
+              />
+              <span className="approve-unit">hours</span>
+            </div>
+            <div className="approve-modal-actions">
+              <button onClick={() => setApproveId(null)} className="approve-cancel">Cancel</button>
+              <button onClick={confirmApprove} className="approve-confirm"><Check size={16} /> Approve</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

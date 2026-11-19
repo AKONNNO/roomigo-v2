@@ -1,3 +1,4 @@
+// Developed by: Prince Korankye Akonno
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { BookingProvider } from './context/BookingContext';
@@ -14,6 +15,8 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Admin from './pages/Admin';
 import Manager from './pages/Manager';
+import Payment from './pages/Payment';
+import PaystackCheckout from './pages/PaystackCheckout';
 import './App.css';
 
 function App() {
@@ -35,6 +38,8 @@ function App() {
                   <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                   <Route path="/admin" element={<ProtectedRoute roles={['admin']}><Admin /></ProtectedRoute>} />
                   <Route path="/manager" element={<ProtectedRoute roles={['manager', 'admin']}><Manager /></ProtectedRoute>} />
+                  <Route path="/pay/:enquiryId" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
+                  <Route path="/paystack/:enquiryId" element={<ProtectedRoute><PaystackCheckout /></ProtectedRoute>} />
                 </Routes>
               </main>
               <Footer />

@@ -1,3 +1,4 @@
+// Additional mock properties — authored by Prince Korankye Akonno
 // Additional mock properties
 
 export const additionalProperties = [

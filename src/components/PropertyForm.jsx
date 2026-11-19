@@ -1,3 +1,4 @@
+// PropertyForm component — coded by Prince Korankye Akonno
 import { useState } from 'react';
 import { roomTypeOptions } from '../data/additionalProperties';
 import './PropertyForm.css';

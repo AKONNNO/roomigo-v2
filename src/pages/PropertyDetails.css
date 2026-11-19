@@ -1,3 +1,5 @@
+/* PropertyDetails page styles — developed by Prince Korankye Akonno */
+
 .property-details { padding: 2rem 0; background: var(--cloud); min-height: 100vh; }
 .property-details .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
 .details-topbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }

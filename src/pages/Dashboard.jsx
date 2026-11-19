@@ -1,7 +1,9 @@
+// Dashboard page — developed by Prince Korankye Akonno
 import { Link, useNavigate } from 'react-router-dom';
-import { Home, MessageSquare, User, Settings, LogOut, Check, Clock, X } from 'lucide-react';
+import { Home, MessageSquare, User, Settings, LogOut, Check, Clock, X, CreditCard, BadgeCheck, Timer } from 'lucide-react';
 import { useAuth } from '../context/useAuth';
 import { useBooking } from '../context/useBooking';
+import { isExpired, timeLeft, formatCountdown } from '../utils/payment';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -75,23 +77,64 @@ const Dashboard = () => {
           
           {userEnquiries.length > 0 ? (
             <div className="enquiries-list">
-              {userEnquiries.map(enquiry => (
-                <div key={enquiry.id} className="enquiry-card">
-                  <div className="enquiry-header">
-                    <h3>{enquiry.propertyName}</h3>
-                    <span className={`status-badge ${enquiry.status}`}>
-                      {enquiry.status === 'pending' && <Clock size={14} />}
-                      {enquiry.status === 'approved' && <Check size={14} />}
-                      {enquiry.status === 'rejected' && <X size={14} />}
-                      {enquiry.status}
-                    </span>
+              {userEnquiries.map(enquiry => {
+                const enquiryExpired = isExpired(enquiry);
+                const remainingMs = timeLeft(enquiry);
+                const isPaid = enquiry.paymentStatus === 'paid';
+                return (
+                  <div key={enquiry.id} className="enquiry-card">
+                    <div className="enquiry-header">
+                      <h3>{enquiry.propertyName}</h3>
+                      <span className={`status-badge ${enquiry.status}${isPaid ? ' paid' : ''}`}>
+                        {enquiry.status === 'pending' && <Clock size={14} />}
+                        {enquiry.status === 'approved' && !isPaid && <Check size={14} />}
+                        {enquiry.status === 'approved' && isPaid && <BadgeCheck size={14} />}
+                        {enquiry.status === 'rejected' && <X size={14} />}
+                        {isPaid ? 'Paid' : enquiry.status}
+                      </span>
+                    </div>
+                    <p className="enquiry-message">{enquiry.message}</p>
+                    <div className="enquiry-meta">
+                      <span>Submitted: {new Date(enquiry.createdAt).toLocaleDateString()}</span>
+                      {enquiry.approvedAt && (
+                        <span>Approved: {new Date(enquiry.approvedAt).toLocaleDateString()}</span>
+                      )}
+                    </div>
+
+                    {enquiry.status === 'approved' && !isPaid && (
+                      <div className={`payment-box${enquiryExpired ? ' expired' : ''}`}>
+                        <div className="payment-box-info">
+                          {enquiryExpired ? (
+                            <>
+                              <Timer size={16} />
+                              <span><strong>Payment window expired.</strong> Please contact the manager.</span>
+                            </>
+                          ) : (
+                            <>
+                              <Timer size={16} />
+                              <span>Pay <strong>GHS {Number(enquiry.amount || 0).toLocaleString()}</strong> within <strong>{remainingMs != null ? formatCountdown(remainingMs) : '—'}</strong></span>
+                            </>
+                          )}
+                        </div>
+                        {!enquiryExpired && (
+                          <Link to={`/pay/${enquiry.id}`} className="pay-now-btn">
+                            <CreditCard size={15} /> Pay Now
+                          </Link>
+                        )}
+                      </div>
+                    )}
+
+                    {isPaid && (
+                      <div className="payment-box paid">
+                        <div className="payment-box-info">
+                          <BadgeCheck size={16} />
+                          <span>Paid — thank you!{enquiry.paymentProvider ? ` via ${enquiry.paymentProvider}` : ''}</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <p className="enquiry-message">{enquiry.message}</p>
-                  <div className="enquiry-meta">
-                    <span>Submitted: {new Date(enquiry.createdAt).toLocaleDateString()}</span>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <div className="no-enquiries">

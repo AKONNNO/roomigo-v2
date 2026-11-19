@@ -1,3 +1,4 @@
+// Authored and developed by: Prince Korankye Akonno
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'

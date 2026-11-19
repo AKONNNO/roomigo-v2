@@ -1,3 +1,4 @@
+// Mock data for hostel/property listings — authored by Prince Korankye Akonno
 // Mock data for hostel/property listings around KNUST campus
 
 export const properties = [

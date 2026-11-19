@@ -1,3 +1,4 @@
+// useProperty hook — developed by Prince Korankye Akonno
 import { useContext } from 'react';
 import { PropertyContext } from './property-context';
 

@@ -1,3 +1,4 @@
+// useAuth hook — developed by Prince Korankye Akonno
 import { useContext } from 'react';
 import { AuthContext } from './auth-context';
 

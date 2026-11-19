@@ -1,3 +1,4 @@
+// PropertyDetails page — developed by Prince Korankye Akonno
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { MapPin, Star, Wifi, Shield, Check, Phone, Mail, ArrowLeft, ChevronLeft, ChevronRight, Users, ChevronRight as BreadcrumbSep } from 'lucide-react';
@@ -42,7 +43,9 @@ const PropertyDetails = () => {
       propertyId: property.id,
       propertyName: property.name,
       userId: user?.id || 'guest',
-      roomType: activeRoomType
+      roomType: activeRoomType,
+      amount: Number(activeRoomType ? priceFor(activeRoomType) : property.price) || 0,
+      priceType: property.priceType
     });
     setSubmitted(true);
     setTimeout(() => { setShowForm(false); setSubmitted(false); }, 3000);

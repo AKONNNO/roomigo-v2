@@ -1,3 +1,5 @@
+/* Dashboard page styles — developed by Prince Korankye Akonno */
+
 .dashboard {
   display: flex;
   min-height: 100vh;
@@ -165,6 +167,51 @@
 .status-badge.pending { background: var(--amber-tint); color: var(--amber-text); }
 .status-badge.approved { background: var(--mint); color: var(--teal); }
 .status-badge.rejected { background: var(--red-tint); color: var(--red); }
+.status-badge.paid { background: var(--emerald); color: var(--white); }
+
+.payment-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 0.85rem;
+  padding: 0.85rem 1rem;
+  background: var(--mint);
+  border: 1px solid var(--emerald);
+  border-radius: var(--radius-sm);
+}
+
+.payment-box.expired { background: var(--red-tint); border-color: var(--red); }
+.payment-box.paid { background: var(--cloud); border-color: var(--border); }
+
+.payment-box-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--slate);
+  font-size: 0.9rem;
+}
+
+.payment-box.expired .payment-box-info { color: var(--red); }
+.payment-box-info strong { color: var(--teal); }
+.payment-box.expired .payment-box-info strong { color: var(--red); }
+
+.pay-now-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--navy);
+  color: var(--white);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.pay-now-btn:hover { background: var(--teal); }
 
 .enquiry-message { color: var(--slate); font-size: 0.9rem; margin-bottom: 0.5rem; }
 .enquiry-meta { color: var(--slate); font-size: 0.8rem; }

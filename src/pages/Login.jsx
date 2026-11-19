@@ -1,3 +1,4 @@
+// Login page — developed by Prince Korankye Akonno
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';

@@ -1,3 +1,4 @@
+// Search page — developed by Prince Korankye Akonno
 import { useState, useMemo } from 'react';
 import { Search as SearchIcon } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';

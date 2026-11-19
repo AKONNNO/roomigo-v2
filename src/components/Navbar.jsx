@@ -1,13 +1,25 @@
+// Navbar component — coded by Prince Korankye Akonno
 import { Link, useNavigate } from 'react-router-dom';
-import { User, LogOut, Menu, X, Shield } from 'lucide-react';
+import { User, LogOut, Menu, X, Shield, Bell, CreditCard, Clock } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../context/useAuth';
+import { useBooking } from '../context/useBooking';
+import { isExpired, timeLeft, formatCountdown } from '../utils/payment';
 import './Navbar.css';
 
 const Navbar = () => {
   const { user, isAuthenticated, isAdmin, isManager, logout } = useAuth();
+  const { enquiries } = useBooking();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+
+  // Approved enquiries awaiting payment (students only)
+  const unpaidApprovals = (isAuthenticated && user?.role === 'student')
+    ? enquiries.filter(e => e.userId === user.id && e.status === 'approved' && e.paymentStatus !== 'paid')
+    : [];
+  const activeApprovals = unpaidApprovals.filter(e => !isExpired(e));
+  const expiredApprovals = unpaidApprovals.filter(e => isExpired(e));
+  const notificationCount = activeApprovals.length + expiredApprovals.length;
 
   const handleLogout = () => {
     logout();
@@ -16,7 +28,40 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar">
+    <>
+      {notificationCount > 0 && (
+        <div className="approval-banner">
+          <div className="approval-banner-inner">
+            <Bell size={18} />
+            <div className="approval-banner-text">
+              {activeApprovals.length > 0 && (
+                <span>
+                  {activeApprovals.length > 1
+                    ? `${activeApprovals.length} of your hostel enquiries have been approved. `
+                    : `Your enquiry for ${activeApprovals[0].propertyName} has been approved. `}
+                  Please complete payment within <strong>{formatCountdown(timeLeft(activeApprovals[0]))}</strong>.
+                </span>
+              )}
+              {expiredApprovals.length > 0 && (
+                <span className="banner-expired">
+                  {activeApprovals.length > 0 ? ' ' : ''}
+                  {expiredApprovals.length} payment {expiredApprovals.length > 1 ? 'windows have expired' : 'window has expired'} — please contact the manager.
+                </span>
+              )}
+            </div>
+            <div className="banner-actions">
+              <Link to="/dashboard" className="banner-link"><Clock size={15} /> View details</Link>
+              {activeApprovals.length > 0 && (
+                <Link to={`/pay/${activeApprovals[0].id}`} className="banner-pay-btn">
+                  <CreditCard size={15} /> Pay Now
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="navbar-logo">
           <span className="logo-dot"></span>
@@ -88,6 +133,7 @@ const Navbar = () => {
         </div>
       )}
     </nav>
+    </>
   );
 };
 

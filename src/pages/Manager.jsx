@@ -1,6 +1,7 @@
+// Manager page — developed by Prince Korankye Akonno
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Building2, Check, X, Eye, MessageSquare, LogOut, ClipboardList, Package } from 'lucide-react';
+import { Building2, Check, X, Eye, MessageSquare, LogOut, ClipboardList, Package, AlarmClock } from 'lucide-react';
 import { useAuth } from '../context/useAuth';
 import { useBooking } from '../context/useBooking';
 import { useProperty } from '../context/useProperty';
@@ -9,14 +10,32 @@ import './Manager.css';
 
 const Manager = () => {
   const { user, logout } = useAuth();
-  const { enquiries, bookings, updateEnquiryStatus, updateBookingStatus } = useBooking();
+  const { enquiries, bookings, updateEnquiryStatus, approveEnquiry, updateBookingStatus } = useBooking();
   const { propertiesList, addProperty, updateProperty, updateInventory } = useProperty();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('properties');
   const [editing, setEditing] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [approveId, setApproveId] = useState(null);
+  const [approveHours, setApproveHours] = useState('48');
 
   if (!user) return null;
+
+  // Ask the manager how long the student has to pay, then approve.
+  const handleApprove = (id) => {
+    setApproveId(id);
+    setApproveHours('48');
+  };
+
+  const confirmApprove = () => {
+    const hours = Number(approveHours);
+    if (!hours || hours <= 0) {
+      alert('Please enter a valid number of hours for the payment window.');
+      return;
+    }
+    approveEnquiry(approveId, hours);
+    setApproveId(null);
+  };
 
   const managedProperties = propertiesList.filter(p => p.manager?.email === user.email);
   const propsForDisplay = managedProperties.length > 0 ? managedProperties : propertiesList;
@@ -158,9 +177,12 @@ const Manager = () => {
                         <td>
                           {e.status === 'pending' && (
                             <>
-                              <button onClick={() => updateEnquiryStatus(e.id, 'approved')} className="action-btn approve"><Check size={16} /></button>
+                              <button onClick={() => handleApprove(e.id)} className="action-btn approve" title="Approve (set payment window)"><Check size={16} /></button>
                               <button onClick={() => updateEnquiryStatus(e.id, 'rejected')} className="action-btn reject"><X size={16} /></button>
                             </>
+                          )}
+                          {e.status === 'approved' && e.paymentStatus !== 'paid' && (
+                            <span className="status approved">Awaiting payment</span>
                           )}
                         </td>
                       </tr>
@@ -200,6 +222,30 @@ const Manager = () => {
           )}
         </div>
       </div>
+
+      {approveId != null && (
+        <div className="approve-modal-overlay" onClick={() => setApproveId(null)}>
+          <div className="approve-modal" onClick={(ev) => ev.stopPropagation()}>
+            <div className="approve-modal-icon"><AlarmClock size={28} /></div>
+            <h4>Approve Enquiry &amp; Set Payment Window</h4>
+            <p>How many hours does the student have to complete payment after approval?</p>
+            <div className="approve-input-row">
+              <input
+                type="number"
+                min="1"
+                value={approveHours}
+                onChange={(e) => setApproveHours(e.target.value)}
+                placeholder="e.g. 48"
+              />
+              <span className="approve-unit">hours</span>
+            </div>
+            <div className="approve-modal-actions">
+              <button onClick={() => setApproveId(null)} className="approve-cancel">Cancel</button>
+              <button onClick={confirmApprove} className="approve-confirm"><Check size={16} /> Approve</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

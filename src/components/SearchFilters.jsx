@@ -1,3 +1,4 @@
+// SearchFilters component — coded by Prince Korankye Akonno
 import { locations, priceRanges, genderOptions, amenityOptions, roomTypeOptions } from '../data/additionalProperties';
 import './SearchFilters.css';
 

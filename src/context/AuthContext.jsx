@@ -1,3 +1,4 @@
+// AuthContext — developed by Prince Korankye Akonno
 import { useState, useEffect } from 'react';
 import { AuthContext } from './auth-context';
 

@@ -1,0 +1,340 @@
+/* Payment & Paystack styles — developed by Prince Korankye Akonno */
+
+.payment-page {
+  min-height: 100vh;
+  background: var(--cloud);
+  padding: 2rem 1rem;
+}
+
+.payment-container {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.payment-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  color: var(--teal);
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 1.25rem;
+  padding: 0.25rem 0;
+}
+
+.payment-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.75rem;
+  box-shadow: 0 2px 10px rgba(11,31,58,0.06);
+}
+
+.payment-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.25rem;
+}
+
+.payment-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-sm);
+  background: var(--mint);
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.payment-card-header h1 {
+  font-size: 1.3rem;
+  color: var(--navy);
+  font-family: var(--font-heading);
+}
+
+.payment-card-header p { color: var(--slate); font-size: 0.9rem; }
+
+.payment-amount {
+  margin-left: auto;
+  text-align: right;
+}
+
+.amount-label { display: block; font-size: 0.8rem; color: var(--slate); }
+.amount-value { display: block; font-size: 1.5rem; font-weight: 700; color: var(--navy); }
+.amount-type { display: block; font-size: 0.78rem; color: var(--slate); }
+
+.payment-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1.25rem;
+  font-size: 0.9rem;
+}
+
+.payment-alert.approved { background: var(--mint); color: var(--teal); }
+.payment-alert.paid { background: var(--mint); color: var(--teal); }
+.payment-alert.expired { background: var(--red-tint); color: var(--red); }
+.payment-alert.warning { background: var(--amber-tint); color: var(--amber-text); }
+
+.payment-step {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem 1.25rem;
+  margin: 0 0 1.25rem;
+}
+
+.payment-step legend {
+  padding: 0 0.4rem;
+  font-weight: 700;
+  color: var(--navy);
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.step-num {
+  background: var(--navy);
+  color: var(--white);
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+}
+
+.method-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.method-card {
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  padding: 1.25rem;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  color: var(--slate);
+}
+
+.method-card:hover { border-color: var(--teal); }
+.method-card.selected { border-color: var(--teal); background: var(--mint); color: var(--teal); }
+.method-title { display: block; font-weight: 700; margin-top: 0.5rem; color: var(--navy); }
+.method-desc { display: block; font-size: 0.8rem; color: var(--slate); }
+
+.provider-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.85rem;
+  margin-top: 0.75rem;
+}
+
+.provider-card {
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  padding: 1rem 0.5rem;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.provider-card:hover { border-color: var(--teal); }
+.provider-card.selected { border-color: var(--teal); background: var(--mint); }
+
+.provider-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.1rem;
+  margin: 0 auto 0.5rem;
+}
+
+.provider-label { font-size: 0.82rem; font-weight: 600; color: var(--navy); }
+
+.phone-field { margin-top: 1rem; }
+.phone-field label { display: block; font-size: 0.85rem; color: var(--slate); margin-bottom: 0.4rem; }
+.phone-field input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+}
+.phone-field input:focus { outline: none; border-color: var(--teal); }
+
+.card-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--slate);
+  font-size: 0.9rem;
+  margin-top: 0.75rem;
+}
+
+.payment-error {
+  background: var(--red-tint);
+  color: var(--red);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  margin-bottom: 1rem;
+}
+
+.payment-actions { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.payment-btn-secondary {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: var(--navy);
+  color: var(--white);
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.secure-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  color: var(--slate);
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.payment-not-found { text-align: center; padding: 3rem; }
+.payment-not-found h2 { color: var(--navy); margin-bottom: 0.5rem; }
+.payment-not-found p { color: var(--slate); margin-bottom: 1.25rem; }
+
+/* Paystack checkout specifics */
+.paystack-card { max-width: 480px; margin: 0 auto; }
+
+.paystack-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+
+.paystack-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #0ba4db;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.paystack-name { font-weight: 700; color: var(--navy); font-size: 1.1rem; }
+
+.checkout-summary {
+  background: var(--cloud);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.checkout-summary h2 { font-size: 1.1rem; color: var(--navy); margin-bottom: 0.35rem; }
+.checkout-summary p { color: var(--slate); font-size: 0.9rem; margin-bottom: 1rem; }
+.muted { color: var(--slate); opacity: 0.85; }
+
+.checkout-amount {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px dashed var(--border);
+  padding-top: 0.85rem;
+}
+.checkout-amount span { color: var(--slate); }
+.checkout-amount strong { font-size: 1.4rem; color: var(--navy); }
+
+.processing-state, .success-state, .failed-state {
+  text-align: center;
+  padding: 1.25rem 0.5rem;
+}
+
+.processing-state p { color: var(--slate); margin-top: 1rem; }
+.small { font-size: 0.85rem; }
+
+.spin { animation: spin 1s linear infinite; color: var(--teal); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.success-state h3 { color: var(--navy); margin: 0.75rem 0 0.25rem; }
+.success-state p { color: var(--slate); margin-bottom: 1.25rem; }
+
+.success-details {
+  background: var(--cloud);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+.success-details div {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+.success-details div:last-child { border-bottom: none; }
+.success-details span { color: var(--slate); }
+.success-details .ok { color: var(--teal); }
+
+.failed-state h3 { color: var(--red); }
+.failed-state p { color: var(--slate); margin: 0.5rem 0 1.25rem; }
+
+.paystack-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.9rem;
+  background: var(--teal);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.paystack-btn:hover { background: var(--navy-mid); }
+.paystack-btn.big { padding: 1rem; font-size: 1.05rem; }
+.paystack-btn.ghost { background: var(--navy); margin-top: 0.5rem; }
+.paystack-btn.ghost:hover { background: var(--navy-mid); }
+
+@media (max-width: 560px) {
+  .method-grid { grid-template-columns: 1fr; }
+  .provider-grid { grid-template-columns: 1fr; }
+  .payment-card-header { flex-wrap: wrap; }
+  .payment-amount { margin-left: 0; text-align: left; width: 100%; }
+}
