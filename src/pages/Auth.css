@@ -291,3 +291,9 @@
 @media (max-width: 600px) {
   .room-price-grid { grid-template-columns: 1fr; }
 }
+
+/* Room photos (per room configuration) in the manager setup form */
+.room-photo-field { margin-bottom: 1.25rem; }
+.room-photo-field:last-child { margin-bottom: 0; }
+.room-photo-label { display: inline-block; color: var(--teal); font-size: 0.85rem; margin-bottom: 0.5rem; }
+

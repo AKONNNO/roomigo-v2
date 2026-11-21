@@ -8,12 +8,12 @@ import { useProperty } from '../context/useProperty';
 import { providerLabel } from '../utils/payment';
 import './Payment.css';
 
-// Live Paystack public key (from .env). When set, the real Paystack inline
-// checkout is used. Without it, a safe local demo runs instead (no charge).
+// Live Paystack public key (from .env). When set, the real Paystack checkout is
+// used. Without it, a safe local demo runs instead (no charge).
 const PAYSTACK_PUBLIC_KEY = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || '';
 
-// Ensure the Paystack inline script (window.PaystackPop) is available, even if
-// the <script> tag in index.html hasn't finished loading yet.
+// Ensure the Paystack script (window.PaystackPop) is available, even if the
+// <script> tag in index.html hasn't finished loading yet.
 const ensurePaystackScript = () =>
   new Promise((resolve) => {
     if (window.PaystackPop) return resolve(true);
@@ -105,22 +105,40 @@ const PaystackCheckout = () => {
     }
     setStage('processing');
     processingRef.current = true;
-    const handler = window.PaystackPop.setup({
-      key: PAYSTACK_PUBLIC_KEY,
-      email: user?.email || enquiry.email || 'student@roomigo.gh',
-      amount: Math.round(amount * 100), // amount in pesewas
-      currency: 'GHS',
-      channels: method === 'momo' ? ['mobile_money'] : ['card'],
-      metadata: {
-        custom_fields: [
-          { display_name: 'Property', variable_name: 'property', value: property?.name || enquiry.propertyName },
-          { display_name: 'Payment Method', variable_name: 'method', value: method === 'momo' ? (providerLabel(provider) || 'Mobile Money') : 'Bank Card' }
-        ]
-      },
-      callback: handleSuccess,
-      onClose: () => { processingRef.current = false; setStage('ready'); }
-    });
-    handler.openIframe();
+    try {
+      const handler = window.PaystackPop.setup({
+        key: PAYSTACK_PUBLIC_KEY,
+        email: user?.email || enquiry.email || 'student@roomigo.gh',
+        amount: Math.round(amount * 100), // amount in pesewas
+        currency: 'GHS',
+        channels: method === 'momo' ? ['mobile_money'] : ['card'],
+        metadata: {
+          custom_fields: [
+            { display_name: 'Property', variable_name: 'property', value: property?.name || enquiry.propertyName },
+            { display_name: 'Payment Method', variable_name: 'method', value: method === 'momo' ? (providerLabel(provider) || 'Mobile Money') : 'Bank Card' }
+          ]
+        },
+        callback: handleSuccess,
+        onClose: () => { processingRef.current = false; setStage('ready'); }
+      });
+      // Open the Paystack checkout. `openIframe` is the standard entry point on
+      // the current inline.js client; fall back to `open` (new window) if it is
+      // not available on this library version.
+      if (typeof handler.openIframe === 'function') {
+        handler.openIframe();
+      } else if (typeof handler.open === 'function') {
+        handler.open();
+      } else {
+        throw new Error('Paystack handler did not expose openIframe/open.');
+      }
+    } catch (err) {
+      // Any setup/open failure must surface to the user instead of silently
+      // leaving the checkout page stuck on the "processing" spinner.
+      console.error('Paystack checkout failed:', err);
+      processingRef.current = false;
+      setError(err?.message ? err.message : 'Paystack could not open the checkout. Please try again.');
+      setStage('failed');
+    }
   };
 
   const hasLiveKey = !!PAYSTACK_PUBLIC_KEY;

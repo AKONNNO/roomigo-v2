@@ -42,7 +42,7 @@ const Dashboard = () => {
       <main className="dashboard-main">
         <header className="dashboard-header">
           <div>
-            <h1>Welcome, {user?.name || 'Student'}!</h1>
+            <h1>Hello, {user?.name || 'Student'}!</h1>
             <p>Manage your hostel enquiries and bookings</p>
             <span className="role-badge student">🎓 You are signed in as a Student</span>
           </div>

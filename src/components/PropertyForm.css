@@ -78,3 +78,11 @@
   color: var(--slate);
   margin: 0.25rem 0 0;
 }
+
+/* Room photos (per room configuration) */
+.room-photos-section { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+.room-photos-title { color: var(--navy); font-size: 0.95rem; margin-bottom: 0.25rem; }
+.room-photos-hint { color: var(--slate); font-size: 0.82rem; margin-bottom: 1rem; }
+.room-photo-field { margin-bottom: 1.25rem; }
+.room-photo-field:last-child { margin-bottom: 0; }
+.room-photo-label { display: inline-block; color: var(--teal); font-size: 0.85rem; margin-bottom: 0.5rem; }

@@ -1,6 +1,7 @@
 // PropertyForm component — coded by Prince Korankye Akonno
 import { useState } from 'react';
 import { roomTypeOptions } from '../data/additionalProperties';
+import ImageUploader from './ImageUploader';
 import './PropertyForm.css';
 
 const PropertyForm = ({ initialData = {}, onSubmit, onCancel, submitLabel = 'Save Property' }) => {
@@ -14,10 +15,11 @@ const PropertyForm = ({ initialData = {}, onSubmit, onCancel, submitLabel = 'Sav
     availableRooms: initialData.availableRooms || '',
     roomTypes: initialData.roomTypes ? [...initialData.roomTypes] : [],
     roomPrices: initialData.roomPrices ? { ...initialData.roomPrices } : {},
+    roomImages: initialData.roomImages && typeof initialData.roomImages === 'object' ? { ...initialData.roomImages } : {},
     gender: initialData.gender || 'Mixed',
     amenities: initialData.amenities ? initialData.amenities.join(', ') : '',
     description: initialData.description || '',
-    images: initialData.images ? initialData.images.join(', ') : '',
+    images: initialData.images ? [...initialData.images] : [],
     managerName: initialData.manager?.name || '',
     managerPhone: initialData.manager?.phone || '',
     managerEmail: initialData.manager?.email || ''
@@ -31,8 +33,12 @@ const PropertyForm = ({ initialData = {}, onSubmit, onCancel, submitLabel = 'Sav
     const into = !form.roomTypes.includes(value);
     const roomTypes = into ? [...form.roomTypes, value] : form.roomTypes.filter(v => v !== value);
     const roomPrices = { ...form.roomPrices };
+    const roomImages = { ...form.roomImages };
     if (!into) delete roomPrices[value];
-    setForm({ ...form, roomTypes, roomPrices });
+    // Initialise (but never delete) that room's photo slot so re-selecting it
+    // keeps any photos a manager already uploaded.
+    if (into && !roomImages[value]) roomImages[value] = [];
+    setForm({ ...form, roomTypes, roomPrices, roomImages });
   };
 
   const handleRoomPriceChange = (value, price) => {
@@ -104,21 +110,38 @@ const PropertyForm = ({ initialData = {}, onSubmit, onCancel, submitLabel = 'Sav
             ))}
           </div>
           {form.roomTypes.length > 0 && (
-            <div className="room-price-grid">
-              {[...form.roomTypes].sort((a, b) => a - b).map(rt => (
-                <div key={rt} className="room-price-field">
-                  <span className="roomtype-form-option room-price-tag">{rt} in a Room</span>
-                  <input
-                    name={`roomPrice-${rt}`}
-                    type="number"
-                    min="0"
-                    placeholder="Price (GHS)"
-                    value={form.roomPrices[rt] || ''}
-                    onChange={(e) => handleRoomPriceChange(rt, e.target.value)}
-                  />
-                </div>
-              ))}
-            </div>
+            <>
+              <div className="room-price-grid">
+                {[...form.roomTypes].sort((a, b) => a - b).map(rt => (
+                  <div key={rt} className="room-price-field">
+                    <span className="roomtype-form-option room-price-tag">{rt} in a Room</span>
+                    <input
+                      name={`roomPrice-${rt}`}
+                      type="number"
+                      min="0"
+                      placeholder="Price (GHS)"
+                      value={form.roomPrices[rt] || ''}
+                      onChange={(e) => handleRoomPriceChange(rt, e.target.value)}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div className="room-photos-section">
+                <h4 className="room-photos-title">Room Photos (optional)</h4>
+                <p className="room-photos-hint">Upload a photo for each room configuration. When a student selects that room type, these photos are shown instead of the general gallery.</p>
+                {[...form.roomTypes].sort((a, b) => a - b).map(rt => (
+                  <div className="room-photo-field" key={`room-photo-${rt}`}>
+                    <span className="room-photo-label"><strong>{rt} in a Room</strong> — {rt === 1 ? 'single' : rt === 2 ? 'shared' : 'shared'} room photos</span>
+                    <ImageUploader
+                      value={form.roomImages[rt] || []}
+                      onChange={(images) => setForm({ ...form, roomImages: { ...form.roomImages, [rt]: images } })}
+                      maxImages={6}
+                    />
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
         <div className="form-field">
@@ -138,8 +161,11 @@ const PropertyForm = ({ initialData = {}, onSubmit, onCancel, submitLabel = 'Sav
           <textarea name="description" rows="3" value={form.description} onChange={handleChange} placeholder="Describe the hostel..." />
         </div>
         <div className="form-field full">
-          <label>Image URLs (comma separated)</label>
-          <input name="images" value={form.images} onChange={handleChange} placeholder="https://image1.jpg, https://image2.jpg" />
+          <label>Photos</label>
+          <ImageUploader
+            value={form.images}
+            onChange={(images) => setForm({ ...form, images })}
+          />
         </div>
       </div>
 

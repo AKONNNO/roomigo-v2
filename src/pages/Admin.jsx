@@ -49,10 +49,11 @@ const Admin = () => {
       availableRooms: form.availableRooms !== '' ? Number(form.availableRooms) : Number(form.rooms) || 0,
       roomTypes: form.roomTypes || [],
       roomPrices,
+      roomImages: form.roomImages || {},
       gender: form.gender,
       amenities: form.amenities ? form.amenities.split(',').map(s => s.trim()).filter(Boolean) : [],
       description: form.description,
-      images: form.images ? form.images.split(',').map(s => s.trim()).filter(Boolean) : undefined,
+      images: Array.isArray(form.images) ? form.images.filter(Boolean) : (form.images ? form.images.split(',').map(s => s.trim()).filter(Boolean) : undefined),
       manager: { name: form.managerName, phone: form.managerPhone, email: form.managerEmail }
     };
   };

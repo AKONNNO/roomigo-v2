@@ -37,6 +37,10 @@ export const additionalProperties = [
     availableRooms: 10,
     roomTypes: [1, 2],
     roomPrices: { 1: 6000, 2: 4000 },
+    roomImages: {
+      1: ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800", "https://images.unsplash.com/photo-1554995207-c18c203602cb?w=800"],
+      2: ["https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=800", "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800"]
+    },
     gender: "Mixed",
     images: [
       "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800",
@@ -61,6 +65,11 @@ export const additionalProperties = [
     availableRooms: 7,
     roomTypes: [2, 3, 4],
     roomPrices: { 2: 2000, 3: 1600, 4: 1400 },
+    roomImages: {
+      2: ["https://images.unsplash.com/photo-1560184897-a75a9511b533?w=800"],
+      3: ["https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800"],
+      4: ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800"]
+    },
     gender: "Female Only",
     images: [
       "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=800",

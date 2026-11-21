@@ -5,6 +5,7 @@ import { User, Building2 } from 'lucide-react';
 import { useAuth } from '../context/useAuth';
 import { useProperty } from '../context/useProperty';
 import { roomTypeOptions, amenityOptions } from '../data/additionalProperties';
+import ImageUploader from '../components/ImageUploader';
 import './Auth.css';
 
 const Register = () => {
@@ -12,7 +13,7 @@ const Register = () => {
     name: '', email: '', phone: '', studentId: '', gender: '', password: '', confirmPassword: '',
     role: 'student',
     hostelName: '', hostelAddress: '', distance: '', price: '', priceType: 'per semester',
-    rooms: '', availableRooms: '', roomTypes: [], roomPrices: {}, hostelGender: 'Mixed', amenities: [], images: '', description: ''
+    rooms: '', availableRooms: '', roomTypes: [], roomPrices: {}, roomImages: {}, hostelGender: 'Mixed', amenities: [], images: [], description: ''
   });
   const [error, setError] = useState('');
   const { register } = useAuth();
@@ -34,8 +35,10 @@ const Register = () => {
       ? formData.roomTypes.filter(v => v !== value)
       : [...formData.roomTypes, value];
     const roomPrices = { ...formData.roomPrices };
+    const roomImages = { ...formData.roomImages };
     if (selected) delete roomPrices[value];
-    setFormData({ ...formData, roomTypes, roomPrices });
+    if (!selected && !roomImages[value]) roomImages[value] = [];
+    setFormData({ ...formData, roomTypes, roomPrices, roomImages });
   };
 
   const setRoomPrice = (rt, value) => {
@@ -83,6 +86,7 @@ const Register = () => {
         availableRooms: formData.availableRooms !== '' ? Number(formData.availableRooms) : (Number(formData.rooms) || 0),
         roomTypes: formData.roomTypes.length ? formData.roomTypes : [1, 2],
         roomPrices,
+        roomImages: formData.roomImages || {},
         gender: formData.hostelGender,
         amenities: formData.amenities,
         description: formData.description,
@@ -224,24 +228,41 @@ const Register = () => {
               </div>
 
               {formData.roomTypes.length > 0 && (
-                <div className="form-group">
-                  <label>Price for Each Room Configuration (GHS)</label>
-                  <div className="room-price-grid">
+                <>
+                  <div className="form-group">
+                    <label>Price for Each Room Configuration (GHS)</label>
+                    <div className="room-price-grid">
+                      {[...formData.roomTypes].sort((a, b) => a - b).map(rt => (
+                        <div key={rt} className="room-price-field">
+                          <span className="pill checked room-price-tag">{rt} in a Room</span>
+                          <input
+                            type="number"
+                            min="0"
+                            placeholder="e.g. 2500"
+                            value={formData.roomPrices[rt] || ''}
+                            onChange={(e) => setRoomPrice(rt, e.target.value)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    <p className="hostel-setup-hint">Set the price for each configuration you selected above.</p>
+                  </div>
+
+                  <div className="form-group">
+                    <label>Room Photos (optional)</label>
+                    <p className="hostel-setup-hint">Upload a photo for each room configuration. When a student selects that room type, these photos will be shown.</p>
                     {[...formData.roomTypes].sort((a, b) => a - b).map(rt => (
-                      <div key={rt} className="room-price-field">
-                        <span className="pill checked room-price-tag">{rt} in a Room</span>
-                        <input
-                          type="number"
-                          min="0"
-                          placeholder="e.g. 2500"
-                          value={formData.roomPrices[rt] || ''}
-                          onChange={(e) => setRoomPrice(rt, e.target.value)}
+                      <div className="room-photo-field" key={`room-photo-${rt}`}>
+                        <span className="room-photo-label"><strong>{rt} in a Room</strong> — photos</span>
+                        <ImageUploader
+                          value={formData.roomImages[rt] || []}
+                          onChange={(v) => setField('roomImages', { ...formData.roomImages, [rt]: v })}
+                          maxImages={6}
                         />
                       </div>
                     ))}
                   </div>
-                  <p className="hostel-setup-hint">Set the price for each configuration you selected above.</p>
-                </div>
+                </>
               )}
 
               <div className="form-group">
@@ -257,8 +278,8 @@ const Register = () => {
               </div>
 
               <div className="form-group">
-                <label>Image URLs (comma separated)</label>
-                <input type="text" placeholder="https://image1.jpg, https://image2.jpg" value={formData.images} onChange={(e) => setField('images', e.target.value)} />
+                <label>Hostel Photos</label>
+                <ImageUploader value={formData.images} onChange={(v) => setField('images', v)} />
               </div>
 
               <div className="form-group">

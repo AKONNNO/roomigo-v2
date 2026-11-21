@@ -19,13 +19,25 @@ export const PropertyProvider = ({ children }) => {
       return {
         ...p,
         roomTypes: hasRoomTypes ? p.roomTypes : (seed.roomTypes || []),
-        roomPrices: hasRoomPrices ? p.roomPrices : (seed.roomPrices || {})
+        roomPrices: hasRoomPrices ? p.roomPrices : (seed.roomPrices || {}),
+        // Per-room-configuration photos saved by the manager/seed data.
+        roomImages: p.roomImages && typeof p.roomImages === 'object'
+          ? { ...p.roomImages }
+          : (seed.roomImages || {}),
+        // Student-submitted reviews persist on the property in localStorage.
+        reviewsList: Array.isArray(p.reviewsList) ? [...p.reviewsList] : []
       };
     });
   });
 
   useEffect(() => {
-    localStorage.setItem('roomigo_properties', JSON.stringify(propertiesList));
+    try {
+      localStorage.setItem('roomigo_properties', JSON.stringify(propertiesList));
+    } catch (err) {
+      // Data-URL images can exceed the browser's localStorage quota. Keep the
+      // in-memory state working and surface a clear warning instead of crashing.
+      console.warn('Could not persist properties to localStorage:', err.message);
+    }
   }, [propertiesList]);
 
   // Normalize both sides to string so numeric seed ids (1) and the
@@ -78,6 +90,46 @@ export const PropertyProvider = ({ children }) => {
     ));
   };
 
+  // Add (or update) a student's review for a property and recompute the
+  // aggregate rating. Seed properties carry a baseline rating + review count;
+  // any new student rating is blended into that weighted average so the
+  // displayed rating "adds up" with every student.
+  const addReview = (id, review) => {
+    if (!review || !review.userId) return null;
+    setPropertiesList(propertiesList.map(p => {
+      if (String(p.id) !== String(id)) return p;
+
+      const reviewsList = Array.isArray(p.reviewsList) ? [...p.reviewsList] : [];
+      const existingIdx = reviewsList.findIndex(r => r.userId === review.userId);
+      const normalized = {
+        id: review.id || `review-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        userId: review.userId,
+        userName: review.userName || 'Student',
+        rating: Math.max(1, Math.min(5, Number(review.rating) || 0)),
+        comment: review.comment ? String(review.comment).trim() : '',
+        createdAt: review.createdAt || new Date().toISOString()
+      };
+
+      if (existingIdx >= 0) reviewsList[existingIdx] = normalized;
+      else reviewsList.push(normalized);
+
+      const baselineReviews = Number(p.reviews) || 0;
+      const baselineRating = Number(p.rating) || 0;
+      const studentSum = reviewsList.reduce((sum, r) => sum + Number(r.rating || 0), 0);
+      const totalReviews = baselineReviews + reviewsList.length;
+      const totalRating = totalReviews > 0
+        ? (baselineRating * baselineReviews + studentSum) / totalReviews
+        : 0;
+
+      return {
+        ...p,
+        reviewsList,
+        reviews: totalReviews,
+        rating: Math.round(totalRating * 10) / 10
+      };
+    }));
+  };
+
   const value = {
     propertiesList,
     getProperty,
@@ -85,7 +137,8 @@ export const PropertyProvider = ({ children }) => {
     updateProperty,
     deleteProperty,
     toggleVerified,
-    updateInventory
+    updateInventory,
+    addReview
   };
 
   return (

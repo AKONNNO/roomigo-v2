@@ -7,7 +7,7 @@ const USERS_KEY = 'roomigo_managed_users';
 // Seed account for role-based access demonstration. This is also
 // the fallback registry entry so the demo login keeps working.
 const DEMO_USERS = [
-  { id: 'demo-student', password: 'student123', email: 'student@roomigo.gh', name: 'Kofi Student', role: 'student', studentId: '22512172', phone: '', gender: '' },
+  { id: 'demo-student', password: 'student123', email: 'student@roomigo.gh', name: 'Student', role: 'student', studentId: '22512172', phone: '', gender: '' },
   { id: 'demo-admin', password: 'admin123', email: 'admin@roomigo.gh', name: 'Site Admin', role: 'admin', studentId: '', phone: '', gender: '' }
 ];
 
@@ -15,6 +15,29 @@ const DEMO_USERS = [
 // persisted registry so any browser that stored them earlier can't
 // log in with them anymore.
 const LEGACY_DEMO_IDS = ['demo-manager'];
+
+// The shared demo-student account must not mix its enquiries/bookings with
+// another visitor who also uses the demo login. This per-device marker (a
+// "cookie-like" value persisted in localStorage) gives every browser its own
+// unique student id, so each device keeps only the pending items it created.
+const INSTANCE_KEY = 'roomigo_demo_instance';
+
+const getDeviceInstanceId = () => {
+  try {
+    let id = localStorage.getItem(INSTANCE_KEY);
+    if (!id) {
+      id = `demo-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+      localStorage.setItem(INSTANCE_KEY, id);
+    }
+    return id;
+  } catch {
+    return `demo-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+  }
+};
+
+// Whether this session belongs to the shared demo student login.
+const isDemoStudentAccount = (accountOrSession) => accountOrSession && accountOrSession.id === 'demo-student';
+
 
 const toSessionUser = (account) => ({
   id: account.id,
@@ -28,10 +51,23 @@ const toSessionUser = (account) => ({
 
 export const AuthProvider = ({ children }) => {
   // Restore the stored session synchronously as initial state (no
-  // setState inside an effect, avoids cascading renders).
+  // setState inside an effect, avoids cascading renders). Sessions saved
+  // before per-device isolation used the shared 'demo-student' id; migrate
+  // them to this device's own instance id so no other demo user's bookings
+  // leak into this browser.
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem('roomigo_user');
-    return storedUser ? JSON.parse(storedUser) : null;
+    if (!storedUser) return null;
+    try {
+      const parsed = JSON.parse(storedUser);
+      if (isDemoStudentAccount(parsed)) {
+        parsed.id = getDeviceInstanceId();
+        localStorage.setItem('roomigo_user', JSON.stringify(parsed));
+      }
+      return parsed;
+    } catch {
+      return null;
+    }
   });
 
   // Registry of all managed accounts (students + hostel managers + admin),
@@ -70,6 +106,12 @@ export const AuthProvider = ({ children }) => {
       };
     }
     const sessionUser = toSessionUser(account);
+    // Sandbox the shared demo-student login per device: each browser gets its
+    // own unique id so it only ever sees the pending bookings/enquiries it
+    // created itself, never another demo user's.
+    if (isDemoStudentAccount(account)) {
+      sessionUser.id = getDeviceInstanceId();
+    }
     setUser(sessionUser);
     persistSession(sessionUser);
     return { success: true, user: sessionUser };

@@ -68,3 +68,65 @@
 .not-found h2 { color: var(--navy); }
 .not-found button { margin-top: 1rem; padding: 0.75rem 1.5rem; background: var(--navy); color: var(--white); border: none; border-radius: var(--radius-sm); cursor: pointer; }
 @media (max-width: 900px) { .details-layout { grid-template-columns: 1fr; } .details-sidebar { position: static; } .property-header { flex-direction: column; gap: 1rem; } .rooms-row { grid-template-columns: 1fr 1fr; } .rooms-head span:last-child { display: none; } .rooms-item span:last-child { display: none; } }
+
+/* Student reviews & ratings */
+.reviews-section { margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+.reviews-section > h2 { font-size: 1.25rem; color: var(--navy); margin-bottom: 1rem; }
+.reviews-summary { display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 1.5rem; }
+
+.reviews-score { text-align: center; padding: 1.25rem; background: var(--cloud); border: 1px solid var(--border); border-radius: var(--radius-md); }
+.reviews-score-value { display: block; font-family: var(--font-heading); font-size: 2.5rem; font-weight: 700; color: var(--navy); }
+.reviews-stars { display: inline-flex; gap: 2px; align-items: center; }
+.reviews-total { display: block; margin-top: 0.35rem; color: var(--slate); font-size: 0.85rem; }
+
+.review-form { background: var(--cloud); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.25rem; }
+.review-form h3 { color: var(--navy); font-size: 1rem; margin-bottom: 0.75rem; }
+.review-star-input { display: flex; align-items: center; gap: 0.25rem; margin-bottom: 0.75rem; }
+.review-star-input button { background: none; border: none; padding: 0; cursor: pointer; line-height: 0; }
+.review-star-input button:hover { transform: scale(1.1); }
+.review-star-input span { margin-left: 0.5rem; color: var(--slate); font-size: 0.9rem; font-weight: 600; }
+.review-form textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 0.95rem; color: var(--navy); resize: vertical; min-height: 90px; }
+.review-form textarea:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px var(--mint); }
+.review-form-actions { display: flex; margin-top: 0.75rem; }
+.review-submit-btn { padding: 0.7rem 1.5rem; background: var(--emerald); color: var(--navy); border: none; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer; transition: background 0.2s; }
+.review-submit-btn:hover { background: var(--teal); color: var(--white); }
+.review-note { margin-top: 0.75rem; padding: 0.5rem 0.85rem; background: var(--mint); color: var(--teal); border-radius: var(--radius-sm); font-size: 0.85rem; }
+.review-once-hint { margin-top: 0.6rem; font-size: 0.78rem; color: var(--slate); }
+
+.review-gate { background: var(--cloud); border: 1px dashed var(--border); border-radius: var(--radius-md); padding: 1.25rem; text-align: center; color: var(--slate); }
+.review-gate a { color: var(--teal); font-weight: 600; }
+
+.reviews-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.review-card { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; }
+.review-card-head { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+.review-author { font-weight: 700; color: var(--navy); }
+.review-date { margin-left: auto; color: var(--slate); font-size: 0.8rem; }
+.review-comment { color: var(--slate); font-size: 0.9rem; line-height: 1.6; }
+.review-empty { text-align: center; color: var(--slate); padding: 1.5rem; border: 1px dashed var(--border); border-radius: var(--radius-sm); }
+
+
+
+/* Room-type photo gallery label & room photo chip */
+.gallery-label {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(11, 31, 58, 0.75);
+  color: var(--white);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.45rem 0.9rem;
+  border-radius: 20px;
+}
+.room-photo-chip {
+  font-style: normal;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--teal);
+  background: var(--mint);
+  padding: 0.1rem 0.5rem;
+  border-radius: 20px;
+}
